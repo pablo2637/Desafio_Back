@@ -67,9 +67,32 @@ const queriesRecycle = {
 };
 
 
+const queriesComments = {
+
+    getAllComm: `SELECT * FROM comm`,
+
+
+    PostComm: `INSERT INTO comm (comm, user_id, place_id)
+            VALUES ($1, $2, $3)
+            RETURNING comm, place_id`,
+   
+
+    UpdateComm: `UPDATE comm
+            SET comm = $1
+            WHERE user_id = $2 AND place_id = $3
+            RETURNING comm`,
+                   
+   
+    
+    deleteComm: `DELETE FROM comm WHERE comm_id = $1`
+
+}
+
+
 module.exports = {
     queriesRoles,
     queriesUser,
-    queriesRecycle
+    queriesRecycle,
+    queriesComments
 }
 
