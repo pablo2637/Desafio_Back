@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/modelUsers.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/modelUsers.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { pool } = require('../configs/configPostgreSQL');
+
+const bcrypt = require('bcryptjs');
+
+const {
+    queriesUser,
+    queriesRoles
+} = require('./queries');
+
+
+/**
+ * Crea un usuario nuevo.
+ * @method modelCreateUser
+ * @async
+ * @param {String} name Nombre del usuario
+ * @param {String} last_name Apellido del usuario
+ * @param {String} email Correo electrónico
+ * @param {String} avatar URL de la imagen del usuario  
+ * @param {String} password Contraseña
+ * @returns {json}
+ * @throws {Error}
+ */
+const modelCreateUser = async ({ name, last_name, email, avatar, password }) => {
+
+    let client, result;
+    try {
+
+        client = await pool.connect();
+
+        const salt = bcrypt.genSaltSync(10);
+        password = bcrypt.hashSync(password, salt);
+
+        const data = await client.query(queriesUser.createUser, [name, last_name, email, avatar, password])
+
+        await client.query(queriesRoles.insertRol, [data.rows[0].user_id, 'user']);
+
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
+
+
+/**
+ * Hace la consulta a la base de datos para obtener todos los usuarios.
+ * @method modelGetUsers
+ * @async
+ * @returns {json} Con los usuarios
+ * @throws {Error}
+ */
+const modelGetUsers = async () => {
+
+    let client, result;
+    try {
+
+        client = await pool.connect();
+
+        const data = await client.query(queriesUser.getUsers)
+
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
+
+
+/**
+ * La petición a la base de datos para modificar un usuario.
+ * @method modelUpdateUser
+ * @async
+ * @param {String} name Nombre del usuario
+ * @param {String} last_name Apellido del usuario
+ * @param {String} email Correo electrónico
+ * @param {String} avatar URL de la imagen del usuario  
+ * @param {String} password Contraseña
+ * @param {String} id ID del usuario a modificar
+ * @returns {json}
+ * @throws {Error}
+ */
+const modelUpdateUser = async ({ name, last_name, email, avatar, password }, id) => {
+
+    let client, rslt, isPassOK;
+
+    try {
+
+        client = await pool.connect();
+
+        const data = await client.query(queriesUser.getUserPass, [id]);
+
+        isPassOK = bcrypt.compareSync(password, data.rows[0].password);
+
+        if (isPassOK) {
+
+            const salt = bcrypt.genSaltSync(10);
+            password = bcrypt.hashSync(password, salt);
+
+            rslt = await client.query(queriesUser.updateUser, [name, last_name, email, avatar, password, id]);
+        }
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+
+    if (!isPassOK)
+        return {
+            ok: false,
+            msg: 'El password proporcionado no coincide con el de la base de datos'
+        }
+
+
+    if (rslt.rowCount == 0)
+        return {
+            ok: false,
+            response: {
+                msg: 'Fallo al intentar modificar el usuario.',
+                id,
+                rslt
+            }
+        };
+
+    return {
+        ok: true,
+        response: rslt.rows[0]
+    };
+
+};
+
+
+
+/**
+ * Hace la consulta a la base de datos para traer el usuario a través de su email.
+ * @method modelGetUsers
+ * @async
+ * @param {String} email Correo electrónico del usuario
+ * @returns {json} Con los usuarios
+ * @throws {Error}
+ */
+const modelGetUserByEmail = async (email) => {
+
+    let client, result;
+    try {
+
+        client = await pool.connect();
+
+        const data = await client.query(queriesUser.getUserByEmail, [email])
+
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
+
+module.exports = {
+    modelCreateUser,
+    modelGetUsers,
+    modelUpdateUser,
+    modelGetUserByEmail
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createRecycle">createRecycle</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#getPlacesRecycles">getPlacesRecycles</a></li><li><a href="global.html#getRecycles">getRecycles</a></li><li><a href="global.html#getUserRecycles">getUserRecycles</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#modelCreateRecycle">modelCreateRecycle</a></li><li><a href="global.html#modelCreateUser">modelCreateUser</a></li><li><a href="global.html#modelGetPlaceRecycles">modelGetPlaceRecycles</a></li><li><a href="global.html#modelGetRecycles">modelGetRecycles</a></li><li><a href="global.html#modelGetUserRecycles">modelGetUserRecycles</a></li><li><a href="global.html#modelGetUsers">modelGetUsers</a></li><li><a href="global.html#modelUpdateUser">modelUpdateUser</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue May 16 2023 21:27:51 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
