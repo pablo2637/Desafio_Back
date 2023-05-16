@@ -14,8 +14,10 @@ app.use(express.json());                             // Parse application/json
 
 
 //Rutas
-app.use('/api/users', require('./routes/routerUsers'));    //Users
+app.use('/api/users', require('./routes/routerUsers'));         //Users
+app.use('/api/recycle', require('./routes/routerRecycle'));     //Recycle
 app.use('/api/comments', require('./routes/routerComm'));  //Comments
+
 
 
 //404
