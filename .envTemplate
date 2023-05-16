@@ -1,6 +1,0 @@
-PORT=4000
-
-ELEPHANT_USER=ottcrlgn
-ELEPHANT_PASS=lu2S_r9qDg5oHh30267MNHdc17BznuI4
-ELEPHANT_HOST=rogue.db.elephantsql.com
-ELEPHANT_DB=ottcrlgn
