@@ -7,7 +7,6 @@ const { getAllComm,
     deleteComm } = require('../controllers/controllerComm')
 
 
-    
 
 router.get('/', getAllComm);
 
