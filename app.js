@@ -18,7 +18,7 @@ app.use('/api/users', require('./routes/routerUsers'));         //Users
 app.use('/api/recycle', require('./routes/routerRecycle'));     //Recycle
 app.use('/api/comments', require('./routes/routerComm'));  //Comments
 
-
+app.use('/api/places', require('./routes/placesRouters'));
 
 //404
 app.use((req, res) => { res.status(404).send({ msg: `Ruta no encontrada: ${req.url}` }); });
