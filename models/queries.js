@@ -1,11 +1,14 @@
 
 const queriesRoles = {
-    insertRol: `INSERT INTO roles (user_id, rol)
+    insertRol: `INSERT INTO roles (user_id, role)
                 VALUES ($1, $2);`,
 
-    getRol: `SELECT rol
+    getRol: `SELECT role
                 FROM roles
-                WHERE user_id=$1;`
+                WHERE user_id=$1;`,
+
+    insertRolPlaces: `INSERT INTO roles (place_id, role)
+                VALUES ($1, $2);`
 };
 
 const queriesPlaces = {
@@ -21,7 +24,8 @@ const queriesPlaces = {
 
     createPlaceQuery:`
     INSERT INTO places (place_name, address, coords, phone, email, contact_name)
-    VALUES ($1, $2, $3, $4, $5, $6)`,
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING place_id`,
 
     updatePlaceQuery:`
     UPDATE places

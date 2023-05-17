@@ -1,5 +1,5 @@
 const { pool } = require('../configs/configPostgreSQL');
-const {queriesPlaces} = require('./queries');
+const {queriesPlaces, queriesRoles} = require('./queries');
 
 //*APPOINTMENTS CONTROLLERS
 
@@ -61,6 +61,8 @@ const createPlace = async (data) => { //*operative
         
         client = await pool.connect();
         result = await client.query(queriesPlaces.createPlaceQuery, [place_name, address, coords, phone, email, contact_name]);
+
+        await client.query(queriesRoles.insertRolPlaces, [result.rows[0].place_id, 'place']);
         
     } catch (error) {
         

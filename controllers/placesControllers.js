@@ -68,7 +68,12 @@ const getPlaceByEmailControl = async (req,res) => { //*operative
 const createPlaceControl = async (req,res) => { //*operative
 
     let data;
-    data = req.body;
+
+    data = {
+        
+        role: req.body.role || 'place',
+        ...req.body
+    }
     
     try {
 
