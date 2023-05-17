@@ -1,29 +1,29 @@
 const { pool } = require('../configs/configPostgreSQL');
 
 const {
-    queriesRecycle
+    queriesRewards
 } = require('./queries');
 
 
 
 /**
- * Inserta en la base de datos un reciclaje nuevo
- * @method modelCreateRecycle
+ * Inserta en la base de datos un reward nuevo
+ * @method modelCreateReward
  * @async
  * @param {String} user_id ID del usuario
  * @param {String} place_id ID del establecimiento
- * @param {Number} qty Cantidad a reciclar
+ * @param {Number} qty Reward obtenido
  * @returns {json} 
  * @throws {Error}
  */
-const modelCreateRecycle = async ({ user_id, place_id, qty, reward }) => {
+const modelCreateReward = async ({ user_id, place_id, reward }) => {
 
     let client, result;
     try {
 
         client = await pool.connect();
 
-        const data = await client.query(queriesRecycle.createRecycle, [user_id, place_id, qty, reward])
+        const data = await client.query(queriesRewards.createRewards, [user_id, place_id, reward])
 
         data.rowCount != 0 ? result = data.rows : result = false;
 
@@ -42,20 +42,20 @@ const modelCreateRecycle = async ({ user_id, place_id, qty, reward }) => {
 
 
 /**
- * Hace la consulta a la base de datos para obtener todos los reciclajes.
- * @method modelGetRecycles
+ * Hace la consulta a la base de datos para obtener todos los rewards.
+ * @method modelGetRewards
  * @async
- * @returns {json} Con los reciclajes
+ * @returns {json} Con los rewards
  * @throws {Error}
  */
-const modelGetRecycles = async () => {
+const modelGetRewards = async () => {
 
     let client, result;
     try {
 
         client = await pool.connect();
 
-        const data = await client.query(queriesRecycle.getRecycles)
+        const data = await client.query(queriesRewards.getRewards)
 
         data.rowCount != 0 ? result = data.rows : result = false;
 
@@ -74,22 +74,22 @@ const modelGetRecycles = async () => {
 
 
 /**
- * Hace la consulta a la base de datos para traer los reciclajes de un usuario a través de su email.
- * @method modelGetUserRecycles
+ * Hace la consulta a la base de datos para traer los rewards de un usuario a través de su email.
+ * @method modelGetUserRewards
  * @async
  * @param {String} email Correo electrónico del usuario
- * @returns {json} Los reciclajes
+ * @returns {json} Los rewards
  * @throws {Error}
  */
-const modelGetUserRecycles = async (email) => {
+const modelGetUserRewards = async (email) => {
 
     let client, result;
     try {
-
+console.log('email',email);
         client = await pool.connect();
 
-        const data = await client.query(queriesRecycle.getUserRecyclesByEmail, [email])
-
+        const data = await client.query(queriesRewards.getUserRewardsByEmail, [email])
+        
         data.rowCount != 0 ? result = data.rows : result = false;
 
     } catch (e) {
@@ -106,21 +106,21 @@ const modelGetUserRecycles = async (email) => {
 
 
 /**
- * Hace la consulta a la base de datos para traer los reciclajes de un establecimiento a través de su email.
- * @method modelGetPlaceRecycles
+ * Hace la consulta a la base de datos para traer los rewards de un establecimiento a través de su email.
+ * @method modelGetPlaceRewards
  * @async
  * @param {String} email Correo electrónico del establecimiento
- * @returns {json} Los reciclajes
+ * @returns {json} Los rewards
  * @throws {Error}
  */
-const modelGetPlaceRecycles = async (email) => {
+const modelGetPlaceRewards = async (email) => {
 
     let client, result;
     try {
 
         client = await pool.connect();
 
-        const data = await client.query(queriesRecycle.getPlacesRecyclesByEmail, [email])
+        const data = await client.query(queriesRewards.getPlacesRewardsByEmail, [email])
 
         data.rowCount != 0 ? result = data.rows : result = false;
 
@@ -137,8 +137,8 @@ const modelGetPlaceRecycles = async (email) => {
 
 
 module.exports = {
-    modelGetRecycles,
-    modelCreateRecycle,
-    modelGetUserRecycles,
-    modelGetPlaceRecycles
+    modelGetRewards,
+    modelCreateReward,
+    modelGetUserRewards,
+    modelGetPlaceRewards
 }
