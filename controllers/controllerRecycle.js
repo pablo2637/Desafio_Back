@@ -1,0 +1,176 @@
+const {
+    modelCreateRecycle,
+    modelGetRecycles,
+    modelGetUserRecycles,
+    modelGetPlaceRecycles
+} = require('../models/modelRecycle');
+
+
+
+/**
+ * Crea un nuevo evento de reciclaje.
+ * @method createRecycle
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta, en el body debe tener los campos: user_id,
+ * place_id y qty.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los datos del evento creado.
+ * @throws {Error}
+ */
+const createRecycle = async ({ body }, res) => {
+
+    try {
+
+        const data = await modelCreateRecycle(body);
+
+        if (data) return res.status(200).json({
+            ok: true,
+            data
+        });
+
+    } catch (e) {
+        console.log('catchError en createRecycle:', e);
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error en createRecycle.',
+            error: e.stack
+        });
+
+    };
+};
+
+
+
+
+
+/**
+ * Devuelve todos los reciclajes.
+ * @method getRecycles
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los reciclajes de la base de datos.
+ * @throws {Error}
+ */
+const getRecycles = async (req, res) => {
+
+    try {
+
+        const data = await modelGetRecycles();
+
+        if (data) return res.status(200).json({
+            ok: true,
+            data
+        });
+        else return res.status(400).json({
+            ok: true,
+            msg: 'No hay reciclajes en la base de datos.'
+        });
+
+    } catch (e) {
+        console.log('catchError en getRecycles:', e);
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error en getRecycles.',
+            error: e
+        });
+
+    };
+};
+
+
+
+
+/**
+ * Devuelve todos los reciclajes de un usuario a través de su correo electrónico.
+ * @method getUserRecycles
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta, debe incluir en params: email con el correo
+ * eléctronico del usuario.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los reciclajes
+ * @throws {Error}
+ */
+const getUserRecycles = async ({ params }, res) => {
+
+    try {
+
+        const data = await modelGetUserRecycles(params.email);
+
+        if (data) return res.status(200).json({
+            ok: true,
+            data
+        });
+        else {
+            const err = {};
+            err.email = `No se encontró ningún usuario con el email: ${params.email}`
+            return res.status(400).json({
+                ok: true,
+                errors: err
+            });
+        }
+
+    } catch (e) {
+        console.log('catchError en getUserRecycles:', e);
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error en getUserRecycles.',
+            error: e.stack
+        });
+
+    };
+};
+
+
+
+
+
+/**
+ * Devuelve todos los reciclajes de un establecimiento.
+ * @method getPlacesRecycles
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta, debe incluir en params: email con el correo
+ * eléctronico del establecimiento.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los reciclajes.
+ * @throws {Error}
+ */
+const getPlacesRecycles = async ({ params }, res) => {
+
+    try {
+
+        const data = await modelGetPlaceRecycles(params.email);
+
+        if (data) return res.status(200).json({
+            ok: true,
+            data
+        });
+        else {
+            const err = {};
+            err.email = `No se encontró ningún usuario con el email: ${params.email}`
+            return res.status(400).json({
+                ok: true,
+                errors: err
+            });
+        }
+
+    } catch (e) {
+        console.log('catchError en getUserRecycles:', e);
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error en getUserRecycles.',
+            error: e.stack
+        });
+
+    };
+};
+module.exports = {
+    createRecycle,
+    getRecycles,
+    getUserRecycles,
+    getPlacesRecycles
+}
