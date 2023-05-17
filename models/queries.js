@@ -14,8 +14,11 @@ const queriesRoles = {
 const queriesPlaces = {
 
     allPlacesQuery:`
-    SELECT * FROM places
-    ORDER BY register_date;`,
+    SELECT p.*, r.role
+    FROM places AS p
+    INNER JOIN roles AS r
+    ON r.place_id=p.place_id
+    ORDER BY p.register_date;`,
 
     placeByEmailQuery:`
     SELECT p.place_id, p.place_name, p.address, p.coords, p.phone, p.email, p.contact_name
@@ -39,11 +42,15 @@ const queriesPlaces = {
 
     const queriesUser = {
 
-    getUsers: `SELECT user_id, name, last_name, email, avatar
-                FROM users;`,
+    getUsers: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role
+                FROM users AS u                
+                INNER JOIN roles AS r
+                ON r.user_id=u.user_id;`,
 
-    getUserByEmail: `SELECT user_id, name, last_name, email, avatar
-                    FROM users
+    getUserByEmail: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role
+                    FROM users AS u                
+                    INNER JOIN roles AS r
+                    ON r.user_id=u.user_id
                     WHERE email=$1;`,
 
     createUser: `INSERT INTO users (name, last_name, email, avatar, password)
