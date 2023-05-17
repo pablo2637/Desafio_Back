@@ -11,41 +11,46 @@ const queriesRoles = {
                 VALUES ($1, $2);`
 };
 
+
+
 const queriesPlaces = {
 
-    allPlacesQuery:`
+    allPlacesQuery: `
     SELECT p.*, r.role
     FROM places AS p
     INNER JOIN roles AS r
     ON r.place_id=p.place_id
     ORDER BY p.register_date;`,
 
-    placeByEmailQuery:`
+    placeByEmailQuery: `
     SELECT p.place_id, p.place_name, p.address, p.coords, p.phone, p.email, p.contact_name
     FROM places AS p
     WHERE p.email=$1;`,
 
-    createPlaceQuery:`
+    createPlaceQuery: `
     INSERT INTO places (place_name, address, coords, phone, email, contact_name)
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING place_id`,
 
-    updatePlaceQuery:`
+    updatePlaceQuery: `
     UPDATE places
     SET place_name=$1,address=$2,coords=$3,phone=$4,email=$5,contact_name=$6
     WHERE place_id=$7`,
 
-    deletePlaceQuery:`
+    deletePlaceQuery: `
     DELETE FROM places
     WHERE email=$1`
-}
+};
 
-    const queriesUser = {
+
+
+const queriesUser = {
 
     getUsers: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role
                 FROM users AS u                
                 INNER JOIN roles AS r
-                ON r.user_id=u.user_id;`,
+                ON r.user_id=u.user_id
+                ORDER BY u.register_date;`,
 
     getUserByEmail: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role
                     FROM users AS u                
@@ -73,61 +78,100 @@ const queriesPlaces = {
 
 
 const queriesRecycle = {
-    createRecycle: `INSERT INTO recycle (user_id, place_id, qty)
-    VALUES ($1, $2, $3)
-    RETURNING rec_id, user_id, place_id, qty;`,
+    createRecycle: `INSERT INTO recycle (user_id, place_id, qty, reward)
+    VALUES ($1, $2, $3, $4)
+    RETURNING rec_id, user_id, place_id, qty, reward;`,
 
-    getRecycles: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty
-                FROM recycle AS r
-                INNER JOIN users AS u
-                ON r.user_id=u.user_id
-                INNER JOIN places AS p
-                ON p.place_id=r.place_id;`,
-
-    getUserRecyclesByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty
+    getRecycles: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
                 FROM recycle AS r
                 INNER JOIN users AS u
                 ON r.user_id=u.user_id
                 INNER JOIN places AS p
                 ON p.place_id=r.place_id
-                WHERE u.email=$1;`,
+                ORDER BY r.register_date;`,
 
-    getPlacesRecyclesByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty
+    getUserRecyclesByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
                 FROM recycle AS r
                 INNER JOIN users AS u
                 ON r.user_id=u.user_id
                 INNER JOIN places AS p
                 ON p.place_id=r.place_id
-                WHERE p.email=$1;`,
+                WHERE u.email=$1
+                ORDER BY r.register_date;`,
+
+    getPlacesRecyclesByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
+                FROM recycle AS r
+                INNER JOIN users AS u
+                ON r.user_id=u.user_id
+                INNER JOIN places AS p
+                ON p.place_id=r.place_id
+                WHERE p.email=$1
+                ORDER BY r.register_date;`
+};
+
+
+const queriesRewards = {
+    createRewards: `INSERT INTO rewards (user_id, place_id, reward)
+                    VALUES ($1, $2, $3)
+                    RETURNING rew_id, user_id, place_id, reward;`,
+
+    getRewards: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.reward
+                FROM rewards AS r
+                INNER JOIN users AS u
+                ON r.user_id=u.user_id
+                INNER JOIN places AS p
+                ON p.place_id=r.place_id
+                ORDER BY r.register_date;`,
+
+    getUserRewardsByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.reward
+                FROM rewards AS r
+                INNER JOIN users AS u
+                ON r.user_id=u.user_id
+                INNER JOIN places AS p
+                ON p.place_id=r.place_id
+                WHERE u.email=$1
+                ORDER BY r.register_date;;`,
+
+    getPlacesRewardsByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.reward
+                FROM rewards AS r
+                INNER JOIN users AS u
+                ON r.user_id=u.user_id
+                INNER JOIN places AS p
+                ON p.place_id=r.place_id
+                WHERE p.email=$1
+                ORDER BY r.register_date;`,
 
 };
 
 
 const queriesComments = {
 
-    getAllComm: `SELECT * FROM comm`,
+    getAllComm: `SELECT * FROM comm AS c
+                ORDER BY c.register_date;`,
 
 
     PostComm: `INSERT INTO comm (comm, user_id, place_id)
             VALUES ($1, $2, $3)
             RETURNING comm, place_id`,
-   
+
 
     UpdateComm: `UPDATE comm
             SET comm = $1
             WHERE user_id = $2 AND place_id = $3
-            RETURNING comm`,            
-            
-    
+            RETURNING comm`,
+
+
     deleteComm: `DELETE FROM comm WHERE comm_id = $1`,
-}
+};
+
+
 
 module.exports = {
-
     queriesPlaces,
     queriesRoles,
     queriesUser,
     queriesRecycle,
-    queriesComments
+    queriesComments,
+    queriesRewards
 }
 
