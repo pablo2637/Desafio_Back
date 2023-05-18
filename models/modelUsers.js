@@ -179,7 +179,40 @@ const modelGetUserByEmail = async (email) => {
 };
 
 
+
+/**
+ * Hace la consulta a la base de datos para traer el password del usuario a través de su id.
+ * @method modelGetPasswordByID
+ * @async
+ * @param {String} id ID del usuario
+ * @returns {json} El password
+ * @throws {Error}
+ */
+const modelGetPasswordByID = async (id) => {
+
+    let client, result;
+    try {
+        
+        client = await pool.connect();
+
+        const data = await client.query(queriesUser.getUserPass, [id])
+        
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
+
 module.exports = {
+    modelGetPasswordByID,
     modelCreateUser,
     modelGetUsers,
     modelUpdateUser,

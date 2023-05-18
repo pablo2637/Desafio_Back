@@ -9,7 +9,8 @@ const {
     createUser,
     getUsers,
     updateUser,
-    getUserByEmail
+    getUserByEmail,
+    loginUser
 } = require('../controllers/controllerUsers');
 
 
@@ -19,6 +20,10 @@ router.get('/', getUsers);
 
 
 router.get('/:email', getUserByEmail);
+
+
+
+router.post('/login/', loginUser);
 
 
 

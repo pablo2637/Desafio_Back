@@ -1,9 +1,11 @@
+const bcrypt = require('bcryptjs');
 
 const {
     modelCreateUser,
     modelGetUsers,
     modelUpdateUser,
-    modelGetUserByEmail
+    modelGetUserByEmail,
+    modelGetPasswordByID
 } = require('../models/modelUsers');
 
 
@@ -173,9 +175,59 @@ const getUserByEmail = async ({ params }, res) => {
 
 
 
+
+
+/**
+ * Devuelve todos los usuarios.
+ * @method loginUser
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta, debe incluir en body: email con el correo
+ * eléctronico del usuario y password: con la contraseña.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con el usuario de la base de datos.
+ * @throws {Error}
+ */
+const loginUser = async ({ body }, res) => {
+
+    try {
+
+        const data = await modelGetUserByEmail(body.email);
+        
+        const userPass = await modelGetPasswordByID(data[0].user_id);
+        
+        const passwordOk = bcrypt.compareSync(body.password, userPass[0].password);
+
+        if (!passwordOk)
+            return res.status(401).json({
+                ok: false,
+                msg: 'El usuario/contraseña no corresponden a los datos almacenados.',
+            });
+
+        return res.status(200).json({
+            ok: true,
+            msg: 'Login correcto.',
+            data
+        });
+
+
+    } catch (e) {
+        console.log('catchError en loginUser:', e);
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error en loginUser.',
+            error: e.stack
+        });
+
+    };
+};
+
+
+
 module.exports = {
     createUser,
     getUsers,
     updateUser,
-    getUserByEmail
+    getUserByEmail,
+    loginUser
 }
