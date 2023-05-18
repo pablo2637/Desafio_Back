@@ -192,9 +192,15 @@ const loginUser = async ({ body }, res) => {
     try {
 
         const data = await modelGetUserByEmail(body.email);
-        
+
+        if (!data)
+            return res.status(401).json({
+                ok: false,
+                msg: 'El usuario/contraseña no corresponden a los datos almacenados.',
+            });
+
         const userPass = await modelGetPasswordByID(data[0].user_id);
-        
+
         const passwordOk = bcrypt.compareSync(body.password, userPass[0].password);
 
         if (!passwordOk)
