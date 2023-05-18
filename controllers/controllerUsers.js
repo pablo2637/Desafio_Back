@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
-const { generateJwt } = require('../helpers/jwt')
+const { generateJwt, renewToken } = require('../helpers/jwt')
+const jwt = require('jsonwebtoken');
 
 const {
     modelCreateUser,
@@ -249,10 +250,67 @@ const loginUser = async ({ body }, res) => {
 
 
 
+
+/**
+ * Se verifica que el token sea válido, si lo es, continúa al siguiente
+ * paso y crea una cookie con los datos del usuario obtenidos del token.
+ * Si el token no es válido, se redirige a 'login'.
+ * @memberof validateJWT
+ * @method validateJWT
+ * @async
+ * @param {Object} req Es el requerimiento que proviene de las rutas
+ * @param {Object} res Es la respuesta que proviene de las rutas  
+ * @param {Function} next Continúa al siguiente middleware
+ * @throws Redirige a la página de login
+ */
+const validateJWT = async ({ body }, res) => {
+
+    const token = body.token;
+
+    if (token) {
+
+        try {
+
+            const payload = jwt.verify(token, process.env.SECRET_KEY);            
+
+            const user = {
+                user_id: payload.user_id,
+                email: payload.email
+            };
+
+            const newToken = await renewToken(user);
+
+            return res.status(200).json({
+                ok: true,
+                msg: 'Verificación del token correcta.',
+                token: newToken.token
+            });
+
+        } catch (e) {
+            console.log('catchError en validateJWT: ', e)
+
+            return res.status(500).json({
+                ok: false,
+                msg: 'Verificación del token incorrecta.'
+            });
+
+        };
+
+    } else
+        return res.status(500).json({
+            ok: false,
+            msg: 'Verificación del token incorrecta.'
+        });
+
+};
+
+
+
 module.exports = {
     createUser,
     getUsers,
     updateUser,
     getUserByEmail,
-    loginUser
+    loginUser,
+    validateJWT
 }

@@ -10,7 +10,8 @@ const {
     getUsers,
     updateUser,
     getUserByEmail,
-    loginUser
+    loginUser,
+    validateJWT
 } = require('../controllers/controllerUsers');
 
 
@@ -23,7 +24,10 @@ router.get('/:email', getUserByEmail);
 
 
 
-router.post('/login/', loginUser);
+router.post('/login', loginUser);
+
+
+router.post('/renew/', validateJWT);
 
 
 
