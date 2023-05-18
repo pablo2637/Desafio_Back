@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { generateJwt } = require('../helpers/jwt')
 
 const {
     modelCreateUser,
@@ -63,10 +64,20 @@ const createUser = async ({ body }, res) => {
 
         const data = await modelCreateUser(body);
 
-        if (data) return res.status(200).json({
-            ok: true,
-            data
-        });
+        if (data) {
+
+            const user = {
+                id: data.user_id,
+                email: data.email
+            }
+            const token = await generateJwt(user);
+
+            return res.status(200).json({
+                ok: true,
+                data,
+                token
+            });
+        }
 
     } catch (e) {
 
@@ -209,10 +220,18 @@ const loginUser = async ({ body }, res) => {
                 msg: 'El usuario/contraseña no corresponden a los datos almacenados.',
             });
 
+
+        const user = {
+            id: data[0].user_id,
+            email: data[0].email
+        }
+        const token = await generateJwt(user);
+
         return res.status(200).json({
             ok: true,
             msg: 'Login correcto.',
-            data
+            data,
+            token
         });
 
 
