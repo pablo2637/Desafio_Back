@@ -65,19 +65,19 @@ const getPlaceByEmailControl = async (req,res) => { //*operative
 }
 
 //Create place +++++++++
-const createPlaceControl = async (req,res) => { //*operative
+const createPlaceControl = async ({body},res) => { //*operative
 
-    let data;
+    // let data;
 
-    data = {
+    // data = {
         
-        role: req.body.role || 'place',
-        ...req.body
-    }
+    //     role: req.body.role || 'place',
+    //     ...req.body
+    // }
     
     try {
 
-        const petition = await createPlace(data)
+        const petition = await createPlace(body)
 
         const placeCreated = petition.rows
 
@@ -92,6 +92,17 @@ const createPlaceControl = async (req,res) => { //*operative
         }
 
     } catch (error) {
+
+        if (error.toString().includes('duplicate key value')) {
+
+            let err = { email: {} };
+            err.email.msg = 'Este correo ya pertenece a un usuario registrado.'
+
+            return res.status(500).json({
+                ok: false,
+                errors: err
+            });
+        }
         
         return res.status(500).json({
 

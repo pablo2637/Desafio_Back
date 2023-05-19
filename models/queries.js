@@ -28,8 +28,8 @@ const queriesPlaces = {
     WHERE p.email=$1;`,
 
     createPlaceQuery: `
-    INSERT INTO places (place_name, address, coords, phone, email, contact_name)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO places (place_name, address, coords, phone, email, contact_name, password)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING place_id`,
 
     updatePlaceQuery: `

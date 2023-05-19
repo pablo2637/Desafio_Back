@@ -1,5 +1,7 @@
 const { pool } = require('../configs/configPostgreSQL');
-const {queriesPlaces, queriesRoles} = require('./queries');
+const { queriesPlaces, queriesRoles } = require('./queries');
+
+const bcrypt = require('bcryptjs');
 
 //*APPOINTMENTS CONTROLLERS
 
@@ -9,13 +11,13 @@ const getAllPlaces = async () => { //*operative
     let client, result;
 
     try {
-        
+
         client = await pool.connect();
         result = await client.query(queriesPlaces.allPlacesQuery);
 
 
     } catch (error) {
-        
+
         console.log('Model Failed getting all stablishments')
         throw error
     }
@@ -33,13 +35,13 @@ const getPlaceByEmail = async (email) => { //*operative
     let client, result;
 
     try {
-        
+
         client = await pool.connect();
         result = await client.query(queriesPlaces.placeByEmailQuery, [email]);
-        
+
 
     } catch (error) {
-        
+
         console.log('Model Failed getting single stablishment')
         throw error
     }
@@ -55,17 +57,21 @@ const getPlaceByEmail = async (email) => { //*operative
 const createPlace = async (data) => { //*operative
 
     let client, result;
-    const {place_name, address, coords, phone, email, contact_name} = data;
+    const { place_name, address, coords, phone, email, contact_name, password } = data;
+
+
+    const salt = bcrypt.genSaltSync(10);
+    const newPassword = bcrypt.hashSync(password, salt);
 
     try {
-        
+
         client = await pool.connect();
-        result = await client.query(queriesPlaces.createPlaceQuery, [place_name, address, coords, phone, email, contact_name]);
+        result = await client.query(queriesPlaces.createPlaceQuery, [place_name, address, coords, phone, email, contact_name, newPassword]);
 
         await client.query(queriesRoles.insertRolPlaces, [result.rows[0].place_id, 'place']);
-        
+
     } catch (error) {
-        
+
         console.log('Model Failed creating single stablishment')
         throw error
     }
@@ -84,15 +90,15 @@ const updatePlace = async (body, place_id) => { //*operative
 
     console.log(body)
 
-    const {place_name, address, coords, phone, email, contact_name} = body;
+    const { place_name, address, coords, phone, email, contact_name } = body;
 
     try {
-        
+
         client = await pool.connect();
         result = await client.query(queriesPlaces.updatePlaceQuery, [place_name, address, coords, phone, email, contact_name, place_id])
 
     } catch (error) {
-        
+
         console.log('Model FAILED updating place. Please, contact administrator.')
     }
 
@@ -109,12 +115,12 @@ const deletePlace = async (email) => { //*operative
     let client, result;
 
     try {
-        
+
         client = await pool.connect();
         result = await client.query(queriesPlaces.deletePlaceQuery, [email])
 
     } catch (error) {
-        
+
         console.log('Model FAILED deleting place. Please, contact administrator.')
     }
 
@@ -125,7 +131,7 @@ const deletePlace = async (email) => { //*operative
     return result;
 }
 
-module.exports={
+module.exports = {
 
     getAllPlaces,
     getPlaceByEmail,
