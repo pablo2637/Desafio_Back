@@ -4,7 +4,6 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { validateInputs } = require('../middlewares/validateInputs');
 
-
 const {
     createUser,
     getUsers,
@@ -15,13 +14,10 @@ const {
 } = require('../controllers/controllerUsers');
 
 
-
 router.get('/', getUsers);
 
 
-
 router.get('/:email', getUserByEmail);
-
 
 
 router.post('/login', loginUser);

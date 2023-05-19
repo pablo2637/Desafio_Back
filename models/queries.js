@@ -30,7 +30,7 @@ const queriesPlaces = {
     createPlaceQuery: `
     INSERT INTO places (place_name, address, coords, phone, email, contact_name, password)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING place_id`,
+    RETURNING place_id, place_name, address, coords, phone, email, contact_name`,
 
     updatePlaceQuery: `
     UPDATE places

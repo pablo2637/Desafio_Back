@@ -57,16 +57,15 @@ const getPlaceByEmail = async (email) => { //*operative
 const createPlace = async (data) => { //*operative
 
     let client, result;
-    const { place_name, address, coords, phone, email, contact_name, password } = data;
-
+    const { place_name, address, coords, phone, email, contact_name, password: newPassword } = data;
 
     const salt = bcrypt.genSaltSync(10);
-    const newPassword = bcrypt.hashSync(password, salt);
+    const password = bcrypt.hashSync(newPassword, salt);
 
     try {
 
         client = await pool.connect();
-        result = await client.query(queriesPlaces.createPlaceQuery, [place_name, address, coords, phone, email, contact_name, newPassword]);
+        result = await client.query(queriesPlaces.createPlaceQuery, [place_name, address, coords, phone, email, contact_name, password]);
 
         await client.query(queriesRoles.insertRolPlaces, [result.rows[0].place_id, 'place']);
 

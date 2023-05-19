@@ -79,13 +79,12 @@ const createPlaceControl = async ({body},res) => { //*operative
 
                 ok:true,
                 msg: 'Single place created correctly',
-                data
+                data: petition.rows[0]
             })
         }
 
     } catch (error) {
 
-        console.log('esto es el error:', error.toString())
         if (error.toString().includes('duplicate key value')) {
 
             let err = { email: {} };
