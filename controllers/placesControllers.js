@@ -66,14 +66,6 @@ const getPlaceByEmailControl = async (req,res) => { //*operative
 
 //Create place +++++++++
 const createPlaceControl = async ({body},res) => { //*operative
-
-    // let data;
-
-    // data = {
-        
-    //     role: req.body.role || 'place',
-    //     ...req.body
-    // }
     
     try {
 
@@ -93,6 +85,7 @@ const createPlaceControl = async ({body},res) => { //*operative
 
     } catch (error) {
 
+        console.log('esto es el error:', error.toString())
         if (error.toString().includes('duplicate key value')) {
 
             let err = { email: {} };
