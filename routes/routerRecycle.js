@@ -5,9 +5,13 @@ const {
     createRecycle,
     getRecycles,
     getUserRecycles,
-    getPlacesRecycles
+    getPlacesRecycles,
+    getSumRecycles
 } = require('../controllers/controllerRecycle');
 
+
+
+router.get('/:user_id', getSumRecycles)
 
 
 router.get('/', getRecycles);

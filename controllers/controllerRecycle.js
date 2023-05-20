@@ -2,7 +2,8 @@ const {
     modelCreateRecycle,
     modelGetRecycles,
     modelGetUserRecycles,
-    modelGetPlaceRecycles
+    modelGetPlaceRecycles,
+    modelGetSumRecycles
 } = require('../models/modelRecycle');
 
 
@@ -166,9 +167,43 @@ const getPlacesRecycles = async ({ params }, res) => {
 
     };
 };
+
+
+
+const getSumRecycles = async ({ params }, res) => {
+
+    try {
+
+        const data = await modelGetSumRecycles(params.user_id);
+
+        if (data) return res.status(200).json({
+            ok: true,
+            data
+        });
+        else {
+            const err = `No se encontró ningún recycle con el id: ${params.user_id}`
+            return res.status(400).json({
+                ok: true,
+                errors: err
+            });
+        }
+
+    } catch (e) {
+        console.log('catchError en getSumRecycles:', e);
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error en getSumRecycles.',
+            error: e.stack
+        });
+
+    };
+};
+
 module.exports = {
     createRecycle,
     getRecycles,
     getUserRecycles,
-    getPlacesRecycles
+    getPlacesRecycles,
+    getSumRecycles
 }
