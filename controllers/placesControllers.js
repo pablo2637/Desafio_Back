@@ -240,7 +240,7 @@ const loginPlace = async ({ body }, res) => {
             });
         const placePass = await modelGetPasswordByID(data.rows[0].place_id);
 
-        const passwordOk = bcrypt.compareSync(body.password, placePass[0].password);
+        const passwordOk = bcrypt.compareSync(body.password || '', placePass[0].password);
 
         if (!passwordOk)
             return res.status(401).json({
@@ -258,7 +258,7 @@ const loginPlace = async ({ body }, res) => {
         return res.status(200).json({
             ok: true,
             msg: 'Login correcto.',
-            data: data.rows[0],
+            data: data.rows,
             token
         });
 
