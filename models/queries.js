@@ -1,5 +1,6 @@
 
 const queriesRoles = {
+
     insertRol: `INSERT INTO roles (user_id, role)
                 VALUES ($1, $2);`,
 
@@ -16,16 +17,22 @@ const queriesRoles = {
 const queriesPlaces = {
 
     allPlacesQuery: `
-    SELECT p.*, r.role
+    SELECT p.place_id, p.contact_name, r.role, re.*
     FROM places AS p
+    INNER JOIN restaurants AS re
+    ON re.id=p.rest_id
     INNER JOIN roles AS r
     ON r.place_id=p.place_id
     ORDER BY p.register_date;`,
 
-    placeByEmailQuery: `
-    SELECT p.place_id, p.place_name, p.address, p.coords, p.phone, p.email, p.contact_name
+    placeByPhoneQuery: `
+    SELECT p.place_id, p.contact_name, r.role, re.*
     FROM places AS p
-    WHERE p.email=$1;`,
+    INNER JOIN restaurants AS re
+    ON re.id=p.rest_id
+    INNER JOIN roles AS r
+    ON r.place_id=p.place_id
+    WHERE re.phone=$1;`,
 
     createPlaceQuery: `
     INSERT INTO places (place_name, address, coords, phone, email, contact_name, password)
@@ -39,7 +46,22 @@ const queriesPlaces = {
 
     deletePlaceQuery: `
     DELETE FROM places
-    WHERE email=$1`
+    WHERE email=$1`,
+
+    getPlacePass: `SELECT password
+    FROM places AS p
+    WHERE place_id=$1;`,
+};
+
+
+
+const queriesRestaurants = {
+
+    getRestaurants: `SELECT id as place_id, name as place_name, address, image_url, ARRAY[latitude, longitude] AS coords,
+                        phone, price, url, rating
+                    FROM restaurants
+                    ORDER BY name;`,
+
 };
 
 
@@ -78,9 +100,10 @@ const queriesUser = {
 
 
 const queriesRecycle = {
+
     createRecycle: `INSERT INTO recycle (user_id, place_id, qty, reward)
-    VALUES ($1, $2, $3, $4)
-    RETURNING rec_id, user_id, place_id, qty, reward;`,
+                    VALUES ($1, $2, $3, $4)
+                    RETURNING rec_id, user_id, place_id, qty, reward;`,
 
     getRecycles: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
                 FROM recycle AS r
@@ -111,6 +134,7 @@ const queriesRecycle = {
 
 
 const queriesRewards = {
+
     createRewards: `INSERT INTO rewards (user_id, place_id, reward)
                     VALUES ($1, $2, $3)
                     RETURNING rew_id, user_id, place_id, reward;`,
@@ -169,6 +193,7 @@ const queriesComments = {
 module.exports = {
     queriesPlaces,
     queriesRoles,
+    queriesRestaurants,
     queriesUser,
     queriesRecycle,
     queriesComments,

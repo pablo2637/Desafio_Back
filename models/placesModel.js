@@ -1,9 +1,11 @@
 const { pool } = require('../configs/configPostgreSQL');
-const { queriesPlaces, queriesRoles } = require('./queries');
+const { queriesPlaces, queriesRoles, queriesRestaurants } = require('./queries');
 
 const bcrypt = require('bcryptjs');
 
 //*APPOINTMENTS CONTROLLERS
+
+
 
 //Get All Places ++++++++++
 const getAllPlaces = async () => { //*operative
@@ -27,17 +29,44 @@ const getAllPlaces = async () => { //*operative
         client.release();
     }
     return result;
-}
+};
 
-//Get Place by place Email ++++++++
-const getPlaceByEmail = async (email) => { //*operative
+
+//Get All Restaurants ++++++++++
+const getAllRestaurants = async () => { //*operative
 
     let client, result;
 
     try {
 
         client = await pool.connect();
-        result = await client.query(queriesPlaces.placeByEmailQuery, [email]);
+        result = await client.query(queriesRestaurants.getRestaurants);
+
+
+    } catch (error) {
+
+        console.log('Model Failed getting all restaurants')
+        throw error
+    }
+
+    finally {
+
+        client.release();
+    }
+    return result;
+};
+
+
+
+//Get Place by place Phone ++++++++
+const getPlaceByPhone = async (phone) => { //*operative
+
+    let client, result;
+
+    try {
+
+        client = await pool.connect();
+        result = await client.query(queriesPlaces.placeByPhoneQuery, [phone]);
 
 
     } catch (error) {
@@ -51,7 +80,9 @@ const getPlaceByEmail = async (email) => { //*operative
         client.release();
     }
     return result;
-}
+};
+
+
 
 //Create Place
 const createPlace = async (data) => { //*operative
@@ -80,7 +111,9 @@ const createPlace = async (data) => { //*operative
         client.release();
     }
     return result;
-}
+};
+
+
 
 //Update Place
 const updatePlace = async (body, place_id) => { //*operative
@@ -106,7 +139,9 @@ const updatePlace = async (body, place_id) => { //*operative
         client.release();
     }
     return result;
-}
+};
+
+
 
 //Delete Place
 const deletePlace = async (email) => { //*operative
@@ -128,13 +163,47 @@ const deletePlace = async (email) => { //*operative
         client.release();
     }
     return result;
-}
+};
+
+
+
+/**
+ * Hace la consulta a la base de datos para traer el password del establecimiento a través de su id.
+ * @method modelGetPasswordByID
+ * @async
+ * @param {String} id ID del establecimiento
+ * @returns {json} El password
+ * @throws {Error}
+ */
+const modelGetPasswordByID = async (id) => {
+
+    let client, result;
+    try {
+        
+        client = await pool.connect();
+
+        const data = await client.query(queriesPlaces.getPlacePass, [id])
+        
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
 
 module.exports = {
-
+    getAllRestaurants,
     getAllPlaces,
-    getPlaceByEmail,
+    getPlaceByPhone,
     createPlace,
     updatePlace,
-    deletePlace
+    deletePlace,
+    modelGetPasswordByID
 }

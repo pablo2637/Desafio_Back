@@ -1,14 +1,17 @@
-const express = require ('express');
+const express = require('express');
 const router = express.Router();
 
 const { check } = require('express-validator');
 const { validateInputs } = require('../middlewares/validateInputs');
 
-const { 
-    getAllPlacesControl, 
-    getPlaceByEmailControl, 
-    createPlaceControl, 
-    deletePlaceControl, 
+const {
+    getAllPlacesControl,
+    createPlaceControl,
+    getPlaceByPhoneControl,
+    deletePlaceControl,
+    getAllRestaurantsControl,
+    loginPlace,
+    validatePlaceJWT,
     updatePlaceControl } = require('../controllers/placesControllers');
 
 
@@ -17,11 +20,25 @@ const {
 //Get All Places ++++++++++
 router.get('/', getAllPlacesControl);
 
+
+//Get All Restaurants ++++++++++
+router.get('/restaurants', getAllRestaurantsControl);
+
+
+
+//Login place ++++++++++
+router.post('/login', loginPlace);
+
+
+//verifica y renueva el token
+router.post('/renew/', validatePlaceJWT);
+
+
 //Get Place by email
-router.get('/:email', getPlaceByEmailControl);
+router.get('/:phone', getPlaceByPhoneControl);
 
 //Create Place ++++++++++
-router.post('/create',[
+router.post('/create', [
 
     check('place_name', 'Nombre de establecimiento obligatorio').trim().not().isEmpty(),
     check('address', 'Dirección de establecimiento obligatorio').trim().not().isEmpty(),
