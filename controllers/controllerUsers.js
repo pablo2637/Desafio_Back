@@ -62,7 +62,7 @@ const getUsers = async (req, res) => {
 const createUser = async ({ body }, res) => {
 
     try {
-console.log('body',body);
+        
         const data = await modelCreateUser(body);
 
         if (data) {
