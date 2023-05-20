@@ -233,12 +233,11 @@ const loginPlace = async ({ body }, res) => {
 
         const data = await getPlaceByPhone(body.phone);
 
-        if (!data.ok)
+        if (data.rows == 0)
             return res.status(401).json({
                 ok: false,
                 msg: 'El teléfono/contraseña no corresponden a los datos almacenados.',
             });
-        
         const placePass = await modelGetPasswordByID(data.rows[0].place_id);
 
         const passwordOk = bcrypt.compareSync(body.password, placePass[0].password);
