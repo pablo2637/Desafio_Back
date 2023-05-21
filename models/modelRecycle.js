@@ -136,9 +136,40 @@ const modelGetPlaceRecycles = async (email) => {
 };
 
 
+/**
+ * Hace la consulta a la base de datos para traer los reciclajes de un usuario a través de su email.
+ * @method modelGetUserRecycles
+ * @async
+ * @param {String} email Correo electrónico del usuario
+ * @returns {json} Los reciclajes
+ * @throws {Error}
+ */
+const modelGetSumRecycles = async (user_id) => {
+
+    let client, result;
+    try {
+
+        client = await pool.connect();
+
+        const data = await client.query(queriesRecycle.sumRecycle, [user_id])
+
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
 module.exports = {
     modelGetRecycles,
     modelCreateRecycle,
     modelGetUserRecycles,
-    modelGetPlaceRecycles
+    modelGetPlaceRecycles,
+    modelGetSumRecycles
 }
