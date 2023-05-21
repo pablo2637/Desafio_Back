@@ -105,13 +105,7 @@ const queriesRecycle = {
                     VALUES ($1, $2, $3, $4)
                     RETURNING rec_id, user_id, place_id, qty, reward;`,
 
-    getRecycles: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
-                FROM recycle AS r
-                INNER JOIN users AS u
-                ON r.user_id=u.user_id
-                INNER JOIN places AS p
-                ON p.place_id=r.place_id
-                ORDER BY r.register_date;`,
+    getRecycles: `SELECT * FROM recycle`,
 
     getUserRecyclesByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
                 FROM recycle AS r
@@ -129,7 +123,13 @@ const queriesRecycle = {
                 INNER JOIN places AS p
                 ON p.place_id=r.place_id
                 WHERE p.email=$1
-                ORDER BY r.register_date;`
+                ORDER BY r.register_date;`,
+
+
+    sumRecycle:` Select user_id, total_rewards from 
+                 (SELECT sum(reward) total_rewards, user_id  
+                FROM recycle group by user_id) C1 where C1.user_id = $1 ;`,
+    
 };
 
 
