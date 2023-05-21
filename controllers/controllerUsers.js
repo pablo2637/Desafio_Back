@@ -62,7 +62,7 @@ const getUsers = async (req, res) => {
 const createUser = async ({ body }, res) => {
 
     try {
-        
+
         const data = await modelCreateUser(body);
 
         if (data) {
@@ -271,18 +271,27 @@ const validateJWT = async ({ body }, res) => {
 
         try {
 
-            const payload = jwt.verify(token, process.env.SECRET_KEY);            
+            const payload = jwt.verify(token, process.env.SECRET_KEY);
 
-            const user = {
+            const userToken = {
                 user_id: payload.user_id,
                 email: payload.email
             };
 
-            const newToken = await renewToken(user);
+            const newToken = await renewToken(userToken);
+
+            const user = await modelGetUserByEmail(payload.email);
+            if (!user)
+                return res.status(500).json({
+                    ok: false,
+                    msg: 'Verificación del token incorrecta.'
+                });
+
 
             return res.status(200).json({
                 ok: true,
                 msg: 'Verificación del token correcta.',
+                user,
                 token: newToken.token
             });
 

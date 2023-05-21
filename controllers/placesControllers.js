@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const { generateJwt, renewToken } = require('../helpers/jwt')
 
@@ -251,7 +252,7 @@ const loginPlace = async ({ body }, res) => {
 
         const place = {
             id: data.rows[0].place_id,
-            email: data.rows[0].phone
+            phone: data.rows[0].phone
         }
         const token = await generateJwt(place);
 
@@ -299,16 +300,24 @@ const validatePlaceJWT = async ({ body }, res) => {
 
             const payload = jwt.verify(token, process.env.SECRET_KEY);
 
-            const place = {
+            const placeToken = {
                 place_id: payload.place_id,
                 phone: payload.phone
             };
 
-            const newToken = await renewToken(place);
+            const newToken = await renewToken(placeToken);
+
+            const place = await getPlaceByPhone(payload.phone);
+            if (!place)
+                return res.status(500).json({
+                    ok: false,
+                    msg: 'Verificación del token incorrecta.'
+                });
 
             return res.status(200).json({
                 ok: true,
                 msg: 'Verificación del token correcta.',
+                user: place.rows,
                 token: newToken.token
             });
 
