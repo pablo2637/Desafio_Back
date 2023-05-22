@@ -73,6 +73,7 @@ const createUser = async ({ body }, res) => {
             }
             const token = await generateJwt(user);
 
+            data[0].role = 'user';
             return res.status(200).json({
                 ok: true,
                 data,

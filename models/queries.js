@@ -82,7 +82,7 @@ const queriesUser = {
 
     createUser: `INSERT INTO users (name, last_name, email, avatar, password)
                     VALUES ($1, $2, $3, $4, $5)
-                    RETURNING user_id, name, email;`,
+                    RETURNING user_id,last_name,avatar, name, email;`,
 
     updateUser: `UPDATE users
                         SET name=$1,
