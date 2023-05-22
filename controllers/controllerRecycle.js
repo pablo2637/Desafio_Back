@@ -98,14 +98,14 @@ const getUserRecycles = async ({ params }, res) => {
 
     try {
 
-        const data = await modelGetUserRecycles(params.email);
+        const data = await modelGetUserRecycles(params.id);
 
         if (data) return res.status(200).json({
             ok: true,
             data
         });
         else {
-            const err = `No se encontró ningún recycle con el email: ${params.email}`
+            const err = `No se encontró ningún recycle con el ID: ${params.id}`
             return res.status(400).json({
                 ok: true,
                 errors: err

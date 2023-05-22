@@ -18,7 +18,7 @@ router.get('/', getRecycles);
 
 
 
-router.get('/user/:email', getUserRecycles);
+router.get('/user/:id', getUserRecycles);
 
 
 

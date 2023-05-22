@@ -107,14 +107,14 @@ const queriesRecycle = {
 
     getRecycles: `SELECT * FROM recycle`,
 
-    getUserRecyclesByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
-                FROM recycle AS r
-                INNER JOIN users AS u
-                ON r.user_id=u.user_id
-                INNER JOIN places AS p
-                ON p.place_id=r.place_id
-                WHERE u.email=$1
-                ORDER BY r.register_date;`,
+    getUserRecyclesByID: `SELECT r.register_date, u.name, u.user_id, u.email, e.name, e.address, e.phone, r.qty, r.reward,
+                            CASE WHEN EXISTS (SELECT 1 FROM recycle re WHERE re.qty = 0 AND re.user_id = u.user_id) THEN u.user_id END AS points
+                            FROM recycle AS r
+                            INNER JOIN users AS u ON r.user_id = u.user_id
+                            INNER JOIN places AS p ON p.place_id = r.place_id
+                            INNER JOIN restaurants AS e ON p.rest_id = e.id
+                            WHERE u.user_id = $1
+                            ORDER BY r.register_date;`,
 
     getPlacesRecyclesByEmail: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_name, p.coords, p.phone, r.qty, r.reward
                 FROM recycle AS r
@@ -126,10 +126,15 @@ const queriesRecycle = {
                 ORDER BY r.register_date;`,
 
 
-    sumRecycle:` Select user_id, total_rewards from 
-                 (SELECT sum(reward) total_rewards, user_id  
+    check1000Points: `SELECT user_id
+                        FROM recycle as r
+                        WHERE EXISTS (qty = 0 AND user_id=$1);`,
+
+
+    sumRecycle: ` Select user_id, total_rewards from 
+                 (SELECT sum(reward) total_rewards, user_id
                 FROM recycle group by user_id) C1 where C1.user_id = $1 ;`,
-    
+
 };
 
 
