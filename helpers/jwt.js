@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
  * @throws {Object} Devuelve los errores en un Object
  */
 const generateJwt = (payload) => {
-
+    console.log('payload', payload);
     return new Promise((resolve, reject) => {
 
         jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' },
