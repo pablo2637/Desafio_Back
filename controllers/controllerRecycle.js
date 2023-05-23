@@ -132,7 +132,7 @@ const getUserRecycles = async ({ params }, res) => {
  * Devuelve todos los reciclajes de un establecimiento.
  * @method getPlacesRecycles
  * @async
- * @param {Object} req Es el requerimiento de la ruta, debe incluir en params: email con el correo
+ * @param {Object} req Es el requerimiento de la ruta, debe incluir en params: ID con el correo
  * eléctronico del establecimiento.
  * @param {Object} res Es la respuesta de la ruta.
  * @returns {jon} Con los reciclajes.
@@ -142,14 +142,14 @@ const getPlacesRecycles = async ({ params }, res) => {
 
     try {
 
-        const data = await modelGetPlaceRecycles(params.email);
+        const data = await modelGetPlaceRecycles(params.id);
 
         if (data) return res.status(200).json({
             ok: true,
             data
         });
         else {
-            const err = `No se encontró ningún recycle con el email: ${params.email}`
+            const err = `No se encontró ningún recycle con el ID: ${params.id}`
             return res.status(400).json({
                 ok: true,
                 errors: err

@@ -109,18 +109,18 @@ const modelGetUserRecycles = async (id) => {
  * Hace la consulta a la base de datos para traer los reciclajes de un establecimiento a través de su email.
  * @method modelGetPlaceRecycles
  * @async
- * @param {String} email Correo electrónico del establecimiento
+ * @param {String} id ID del establecimiento
  * @returns {json} Los reciclajes
  * @throws {Error}
  */
-const modelGetPlaceRecycles = async (email) => {
+const modelGetPlaceRecycles = async (id) => {
 
     let client, result;
     try {
 
         client = await pool.connect();
 
-        const data = await client.query(queriesRecycle.getPlacesRecyclesByEmail, [email])
+        const data = await client.query(queriesRecycle.getPlacesRecyclesByID, [id])
 
         data.rowCount != 0 ? result = data.rows : result = false;
 

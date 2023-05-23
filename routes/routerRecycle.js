@@ -22,7 +22,7 @@ router.get('/user/:id', getUserRecycles);
 
 
 
-router.get('/place/:email', getPlacesRecycles);
+router.get('/place/:id', getPlacesRecycles);
 
 
 
