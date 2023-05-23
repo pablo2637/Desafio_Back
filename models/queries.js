@@ -107,7 +107,7 @@ const queriesRecycle = {
 
     getRecycles: `SELECT * FROM recycle`,
 
-    getUserRecyclesByID: `SELECT r.register_date, u.name, u.user_id, u.email, e.name, e.address, e.phone, r.qty, r.reward,
+    getUserRecyclesByID: `SELECT r.register_date, u.name, u.user_id, u.email, p.place_id, e.name as place_name, e.address, e.phone, r.qty, r.reward,
                             CASE WHEN EXISTS (SELECT 1 FROM recycle re WHERE re.qty = 0 AND re.user_id = u.user_id) THEN u.user_id END AS points
                             FROM recycle AS r
                             INNER JOIN users AS u ON r.user_id = u.user_id
