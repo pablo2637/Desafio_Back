@@ -23,7 +23,6 @@ const {
 const createRecycle = async ({ body }, res) => {
 
     try {
-        console.log('body', body);
 
         const data = await modelCreateRecycle(body);
 

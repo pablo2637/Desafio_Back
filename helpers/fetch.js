@@ -10,13 +10,10 @@ const axios = require('axios');
  */
 const masterFetchData = async (place_id) => {
 
-
-
     const urlBase = process.env.DATA_URL;
 
     const formData = new FormData();
     formData.append('a', place_id);
-    console.log('form', formData);
 
     try {
 
@@ -32,11 +29,11 @@ const masterFetchData = async (place_id) => {
         /**
          * consulta realizada a través de parámetro URL y las OPTIONS (method,body)
          */
-        let resp = await respuesta.text();
+        let resp = await respuesta;
 
-        console.log('esto es RESP_DATA en Fetch', resp)
+        console.log('esto es RESP_DATA en Fetch', resp.data)
 
-        return resp;
+        return resp.data;
 
     } catch (error) {
 
