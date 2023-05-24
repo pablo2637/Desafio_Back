@@ -8,6 +8,10 @@ const {
     modelGetSumRecycles
 } = require('../models/modelRecycle');
 
+const {
+    modelUpdateRecommendations
+} = require('../models/modelUsers')
+
 
 
 /**
@@ -32,6 +36,7 @@ const createRecycle = async ({ body }, res) => {
             if (body.qty == 0)
                 rec = await masterFetchData(body.rest_id);
 
+            await modelUpdateRecommendations(body.user_id, rec);
 
             return res.status(200).json({
                 ok: true,

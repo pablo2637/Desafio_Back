@@ -1,7 +1,8 @@
 const { pool } = require('../configs/configPostgreSQL');
 
 const {
-    queriesRecycle
+    queriesRecycle,
+    queriesUser
 } = require('./queries');
 
 

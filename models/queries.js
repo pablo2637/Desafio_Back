@@ -74,7 +74,7 @@ const queriesUser = {
                 ON r.user_id=u.user_id
                 ORDER BY u.register_date;`,
 
-    getUserByEmail: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role
+    getUserByEmail: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role, u.recommended
                     FROM users AS u                
                     INNER JOIN roles AS r
                     ON r.user_id=u.user_id
@@ -91,6 +91,10 @@ const queriesUser = {
                             avatar=$4,
                             password=$5                            
                         WHERE user_id=$6;`,
+
+    updateRecommendations: `UPDATE users
+                            SET recommended=$1                                
+                            WHERE user_id=$2;`,
 
     getUserPass: `SELECT password
                     FROM users AS u
