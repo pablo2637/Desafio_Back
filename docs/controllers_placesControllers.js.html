@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: controllers/controllerUsers.js</title>
+    <title>JSDoc: Source: controllers/placesControllers.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: controllers/controllerUsers.js</h1>
+    <h1 class="page-title">Source: controllers/placesControllers.js</h1>
 
     
 
@@ -27,92 +27,180 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>const bcrypt = require('bcryptjs');
-const { generateJwt, renewToken } = require('../helpers/jwt');
 const jwt = require('jsonwebtoken');
 
-const {
-    modelCreateUser,
-    modelGetUsers,
-    modelUpdateUser,
-    modelGetUserByEmail,
-    modelGetPasswordByID
-} = require('../models/modelUsers');
+const { generateJwt, 
+        renewToken } = require('../helpers/jwt')
 
-//*Users CONTROLLERS
+const {
+    getAllPlaces,
+    getPlaceByPhone,
+    createPlace,
+    deletePlace,
+    updatePlace,
+    getAllRestaurants,
+    modelGetPasswordByID
+} = require('../models/placesModel')
+
+
+//*Places CONTROLLERS
 
 /**DOCS
- * Hace la consulta a la base de datos y devuelve todos los usuarios.
- * @method getUsers
+ * Hace la consulta a la base de datos y devuelve todos los places.
+ * @method getAllPlacesControl
  * @async
  * @param {Object} req Es el requerimiento de la ruta.
  * @param {Object} res Es la respuesta de la ruta.
- * @returns {jon} Con los usuarios de la base de datos.
+ * @returns {jon} Con los places de la base de datos.
  * @throws {Error}
  */
-//Gets all users ++++++++++
-const getUsers = async (req, res) => {
+//Get All Places ++++++++++
+const getAllPlacesControl = async (req, res) => {
+
+    let data;
 
     try {
 
-        const data = await modelGetUsers();
+        const petition = await getAllPlaces();
+        data = petition.rows
 
-        if (data) return res.status(200).json({
-            ok: true,
-            data
-        });
-        else return res.status(400).json({
-            ok: true,
-            msg: 'No hay usuarios en la base de datos.'
-        });
+        if (data) {
 
-    } catch (e) {
-        console.log('catchError en getUsers:', e);
+            return res.status(200).json({
+
+                ok: true,
+                msg: 'All places successfully found',
+                data
+            })
+        }
+
+    } catch (error) {
 
         return res.status(500).json({
+
             ok: false,
-            msg: 'Error en getUsers.',
-            error: e
-        });
-    };
+            msg: 'Model FAILED getting all places. Please, contact administrator.'
+        })
+    }
 };
 
 
 /**DOCS
- * Hace la petición a la base de datos para crear un usuario nuevo.
- * @method createUser
+ * Hace la consulta a la BBDD alojada en AWS proporcionada por DATA
+ * y devuelve todos los restaurants. (establecimientos afiliados)
+ * @method getAllRestaurantsControl
  * @async
- * @param {Object} req Es el requerimiento de la ruta, en el body debe tener los campos: name, last_name
- * password, avatar y email.
+ * @param {Object} req Es el requerimiento de la ruta.
  * @param {Object} res Es la respuesta de la ruta.
- * @returns {jon} Con los datos del usuario creado.
+ * @returns {jon} Con los places de la base de datos.
  * @throws {Error}
  */
-//Register a new user ++++++++++
-const createUser = async ({ body }, res) => {
+//Get All Restaurants ++++++++++
+const getAllRestaurantsControl = async (req, res) => {
+
+    let data;
 
     try {
 
-        const data = await modelCreateUser(body);
+        const petition = await getAllRestaurants();
+        data = petition.rows
 
         if (data) {
 
-            const user = {
-                id: data.user_id,
-                email: data.email
-            }
-            const token = await generateJwt(user);
-
-            data[0].role = 'user';
             return res.status(200).json({
+
                 ok: true,
-                data,
-                token
-            });
+                msg: 'All restaurants successfully found',
+                data
+            })
         }
 
-    } catch (e) {
+    } catch (error) {
 
-        if (e.toString().includes('duplicate key value')) {
+        return res.status(500).json({
+
+            ok: false,
+            msg: 'Model FAILED getting all restaurants. Please, contact administrator.'
+        })
+    }
+};
+
+
+/**DOCS
+ * Hace la consulta a la base de datos y devuelve un single place, por teléfono que encuentre.
+ * @method getPlaceByPhoneControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con un place, con número de teléfono coincidente
+ * @throws {Error}
+ */
+//Get place by phone +++++++
+const getPlaceByPhoneControl = async (req, res) => {
+
+    let data, phone;
+    phone = req.params.phone;
+
+    try {
+
+        const petition = await getPlaceByPhone(phone)
+
+        data = petition.rows
+
+        if (phone) {
+
+            return res.status(200).json({
+
+                ok: true,
+                msg: 'Single place gotten correctly',
+                data
+            })
+        }
+
+    } catch (error) {
+
+        return res.status(500).json({
+
+            ok: false,
+            msg: 'Controller Failed getting single place. Please, contact administrator'
+        })
+    }
+}
+
+
+/**DOCS
+ * Hace la consulta a la base de datos para crear una entrada "place".
+ * Afilia un restaurant a la tabla places.
+ * @method createPlaceControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta.
+ * Dentro del body debe tener los campos: place_name, address, coords, phone, contact_name, password.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los datos de un place creado.
+ * @throws {Error}
+ */
+//Create place +++++++++
+const createPlaceControl = async ({ body }, res) => {
+
+    try {
+
+        const petition = await createPlace(body)
+
+        const placeCreated = petition.rows
+
+        if (placeCreated) {
+
+            return res.status(200).json({
+
+                ok: true,
+                msg: 'Single place created correctly',
+                data: petition.rows[0]
+            })
+        }
+
+    } catch (error) {
+
+        if (error.toString().includes('duplicate key value')) {
 
             let err = { email: {} };
             err.email.msg = 'Este correo ya pertenece a un usuario registrado.'
@@ -123,151 +211,153 @@ const createUser = async ({ body }, res) => {
             });
         }
 
-        console.log('catchError en createUser:', e);
-
         return res.status(500).json({
-            ok: false,
-            msg: 'Error en createUser.',
-            error: e.stack
-        });
 
-    };
-};
+            ok: false,
+            msg: 'Controller Failed creating place. Please, contact administrator'
+        })
+    }
+}
 
 
 /**DOCS
- * Hace la petición a la base de datos para editar un usuario.
- * @method updateUser
+ * Hace la consulta a la base de datos para modificar los datos de una entrada "place".
+ * @method updatePlaceControl
  * @async
- * @param {Object} req Es el requerimiento de la ruta, en el body debe tener los campos: name, last_name
- * password, avatar y email, y en params.id debe ir el ID del usuario a modificar.
+ * @param {Object} req Es el requerimiento de la ruta. Recibe Body y place_id. Se captura de los params.
+ * Dentro del body debe tener los campos: place_name, address, coords, phone, contact_name.
  * @param {Object} res Es la respuesta de la ruta.
- * @returns {jon} Con los usuarios de la base de datos.
+ * @returns {jon} Con los datos de un place actualizado.
  * @throws {Error}
  */
-//Updates a single user ++++++++++
-const updateUser = async ({ body, params }, res) => {
+//Update place +++++++++
+const updatePlaceControl = async (req, res) => {
+
+    let data, place_id, body;
+    place_id = req.params.id;
+    body = req.body;
 
     try {
 
-        const response = await modelUpdateUser(body, params.id);
+        if (place_id) {
 
-        if (!response.ok)
-            res.status(500).json(response);
+            const petition = await updatePlace(body, place_id)
 
-        else
-            res.status(200).json(response);
+            data = petition.rowCount
 
-    } catch (e) {
+            return res.status(200).json({
 
-        res.status(500).json({
-            ok: false,
-            msg: 'Error updateUser',
-            body,
-            params,
-            error: e
-        });
-
-    };
-};
-
-
-/**DOCS
- * Devuelve todos los usuarios.
- * @method getUsers
- * @async
- * @param {Object} req Es el requerimiento de la ruta, debe incluir en params: email con el correo
- * eléctronico del usuario.
- * @param {Object} res Es la respuesta de la ruta.
- * @returns {jon} Con el usuario de la base de datos.
- * @throws {Error}
- */
-//Gets single user by email ++++++++++
-const getUserByEmail = async ({ params }, res) => {
-
-    try {
-
-        const data = await modelGetUserByEmail(params.email);
-
-        if (data) return res.status(200).json({
-            ok: true,
-            data
-        });
-        else {
-            const err = {};
-            err.email = `No se encontró ningún usuario con el email: ${params.email}`
-            return res.status(400).json({
                 ok: true,
-                errors: err
-            });
+                msg: `Places updated: ${data}.`,
+                data
+            })
         }
 
-    } catch (e) {
-        console.log('catchError en getUserByEmail:', e);
+    } catch (error) {
 
         return res.status(500).json({
+
             ok: false,
-            msg: 'Error en getUserByEmail.',
-            error: e.stack
-        });
-    };
-};
+            msg: 'Control FAILED updating place. Please, contact administrator.'
+        })
+    }
+}
+
+
+/**DOCS
+ * Hace la consulta a la base de datos para eliminar una entrada "place".
+ * @method deletePlaceControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta. Recibe el email que capturamos en los params.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Un ok:true si la petición es exitosa.
+ * @throws {Error}
+ */
+//Delete place +++++++++
+const deletePlaceControl = async (req, res) => {
+
+    let data, email;
+    email = req.params.email
+
+    try {
+
+        if (email) {
+
+            const petition = await deletePlace(email)
+            data = petition.rowCount
+
+            return res.status(200).json({
+
+                ok: true,
+                msg: `Number of Places deleted: ${data}.`,
+                data
+            })
+        }
+
+    } catch (error) {
+
+        return res.status(500).json({
+
+            ok: true,
+            msg: 'Controller FAILED deleting place. Please, contact administrator.'
+        })
+    }
+}
 
 
 /**DOCS
  * Devuelve todos los usuarios.
- * @method loginUser
+ * @method loginPlace
  * @async
- * @param {Object} req Es el requerimiento de la ruta, debe incluir en body: email con el correo
- * eléctronico del usuario y password: con la contraseña.
+ * @param {Object} req Es el requerimiento de la ruta, debe incluir en body: phone con el 
+ * teléfono del establecimiento y password: con la contraseña.
  * @param {Object} res Es la respuesta de la ruta.
  * @returns {jon} Con el usuario de la base de datos.
  * @throws {Error}
  */
-//Login existing user ++++++++++
-const loginUser = async ({ body }, res) => {
+//Login place +++++++++
+const loginPlace = async ({ body }, res) => {
 
     try {
 
-        const data = await modelGetUserByEmail(body.email);
+        const data = await getPlaceByPhone(body.phone);
 
-        if (!data)
+        if (data.rows == 0)
             return res.status(401).json({
                 ok: false,
-                msg: 'El usuario/contraseña no corresponden a los datos almacenados.',
+                msg: 'El teléfono/contraseña no corresponden a los datos almacenados.',
             });
+        const placePass = await modelGetPasswordByID(data.rows[0].place_id);
 
-        const userPass = await modelGetPasswordByID(data[0].user_id);
-
-        const passwordOk = bcrypt.compareSync(body.password, userPass[0].password);
+        const passwordOk = bcrypt.compareSync(body.password || '', placePass[0].password);
 
         if (!passwordOk)
             return res.status(401).json({
                 ok: false,
-                msg: 'El usuario/contraseña no corresponden a los datos almacenados.',
+                msg: 'El teléfono/contraseña no corresponden a los datos almacenados.',
             });
 
 
-        const user = {
-            id: data[0].user_id,
-            email: data[0].email
+        const place = {
+            id: data.rows[0].place_id,
+            phone: data.rows[0].phone
         }
-        const token = await generateJwt(user);
+        const token = await generateJwt(place);
 
         return res.status(200).json({
             ok: true,
             msg: 'Login correcto.',
-            data,
+            data: data.rows,
             token
         });
 
 
     } catch (e) {
-        console.log('catchError en loginUser:', e);
+        console.log('catchError en loginPlace:', e);
 
         return res.status(500).json({
             ok: false,
-            msg: 'Error en loginUser.',
+            msg: 'Error en loginPlace.',
             error: e.stack
         });
 
@@ -279,16 +369,16 @@ const loginUser = async ({ body }, res) => {
  * Se verifica que el token sea válido, si lo es, continúa al siguiente
  * paso y crea una cookie con los datos del usuario obtenidos del token.
  * Si el token no es válido, se redirige a 'login'.
- * @memberof validateJWT
- * @method validateJWT
+ * @memberof validatePlaceJWT
+ * @method validatePlaceJWT
  * @async
  * @param {Object} req Es el requerimiento que proviene de las rutas
  * @param {Object} res Es la respuesta que proviene de las rutas  
  * @param {Function} next Continúa al siguiente middleware
  * @throws Redirige a la página de login
  */
-//Validates user's token ++++++++++
-const validateJWT = async ({ body }, res) => {
+//Validate Place Token +++++++++
+const validatePlaceJWT = async ({ body }, res) => {
 
     const token = body.token;
 
@@ -298,30 +388,29 @@ const validateJWT = async ({ body }, res) => {
 
             const payload = jwt.verify(token, process.env.SECRET_KEY);
 
-            const userToken = {
-                user_id: payload.user_id,
-                email: payload.email
+            const placeToken = {
+                place_id: payload.place_id,
+                phone: payload.phone
             };
 
-            const newToken = await renewToken(userToken);
+            const newToken = await renewToken(placeToken);
 
-            const user = await modelGetUserByEmail(payload.email);
-            if (!user)
+            const place = await getPlaceByPhone(payload.phone);
+            if (!place)
                 return res.status(500).json({
                     ok: false,
                     msg: 'Verificación del token incorrecta.'
                 });
 
-
             return res.status(200).json({
                 ok: true,
                 msg: 'Verificación del token correcta.',
-                user,
+                user: place.rows,
                 token: newToken.token
             });
 
         } catch (e) {
-            console.log('catchError en validateJWT: ', e)
+            console.log('catchError en validatePlaceJWT: ', e)
 
             return res.status(500).json({
                 ok: false,
@@ -340,12 +429,14 @@ const validateJWT = async ({ body }, res) => {
 
 
 module.exports = {
-    createUser,
-    getUsers,
-    updateUser,
-    getUserByEmail,
-    loginUser,
-    validateJWT
+    validatePlaceJWT,
+    getAllRestaurantsControl,
+    getAllPlacesControl,
+    getPlaceByPhoneControl,
+    createPlaceControl,
+    updatePlaceControl,
+    deletePlaceControl,
+    loginPlace
 }</code></pre>
         </article>
     </section>

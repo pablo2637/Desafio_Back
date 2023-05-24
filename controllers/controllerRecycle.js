@@ -13,8 +13,9 @@ const {
 } = require('../models/modelUsers')
 
 
+//*Recycles CONTROLLERS
 
-/**
+/**DOCS
  * Crea un nuevo evento de reciclaje.
  * @method createRecycle
  * @async
@@ -24,6 +25,7 @@ const {
  * @returns {jon} Con los datos del evento creado.
  * @throws {Error}
  */
+//Create new recycle ++++++++++
 const createRecycle = async ({ body }, res) => {
 
     try {
@@ -37,13 +39,13 @@ const createRecycle = async ({ body }, res) => {
                 rec = await masterFetchData(body.rest_id);
 
                 await modelUpdateRecommendations(body.user_id, rec);
-
-                return res.status(200).json({
-                    ok: true,
-                    data,
-                    recommended: rec
-                });
             }
+
+            return res.status(200).json({
+                ok: true,
+                data,
+                recommended: rec
+            });
 
         }
 
@@ -60,10 +62,7 @@ const createRecycle = async ({ body }, res) => {
 };
 
 
-
-
-
-/**
+/**DOCS
  * Devuelve todos los reciclajes.
  * @method getRecycles
  * @async
@@ -72,6 +71,7 @@ const createRecycle = async ({ body }, res) => {
  * @returns {jon} Con los reciclajes de la base de datos.
  * @throws {Error}
  */
+//Get all recycle entries ++++++++++
 const getRecycles = async (req, res) => {
 
     try {
@@ -100,9 +100,7 @@ const getRecycles = async (req, res) => {
 };
 
 
-
-
-/**
+/**DOCS
  * Devuelve todos los reciclajes de un usuario a través de su correo electrónico.
  * @method getUserRecycles
  * @async
@@ -112,6 +110,7 @@ const getRecycles = async (req, res) => {
  * @returns {jon} Con los reciclajes
  * @throws {Error}
  */
+//Get Recycles asociated to Users ++++++++++
 const getUserRecycles = async ({ params }, res) => {
 
     try {
@@ -143,10 +142,7 @@ const getUserRecycles = async ({ params }, res) => {
 };
 
 
-
-
-
-/**
+/**DOCS
  * Devuelve todos los reciclajes de un establecimiento.
  * @method getPlacesRecycles
  * @async
@@ -156,6 +152,7 @@ const getUserRecycles = async ({ params }, res) => {
  * @returns {jon} Con los reciclajes.
  * @throws {Error}
  */
+//Get Recycles asociated to Places ++++++++++
 const getPlacesRecycles = async ({ params }, res) => {
 
     try {
@@ -187,7 +184,17 @@ const getPlacesRecycles = async ({ params }, res) => {
 };
 
 
-
+/**DOCS
+ * Petición que devuelve la sumatoria de los montos en reciclajes.
+ * Recibe el user_id de los params.
+ * @method getSumRecycles
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta, debe incluir en params el ID del user.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con la suma realizada.
+ * @throws {Error}
+ */
+//Get Recycles summatory ++++++++++
 const getSumRecycles = async ({ params }, res) => {
 
     try {
@@ -217,6 +224,7 @@ const getSumRecycles = async ({ params }, res) => {
 
     };
 };
+
 
 module.exports = {
     createRecycle,

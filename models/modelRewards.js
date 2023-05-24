@@ -5,8 +5,9 @@ const {
 } = require('./queries');
 
 
+//*Rewards models (reciclaje de aceite x puntos)
 
-/**
+/**DOCS
  * Inserta en la base de datos un reward nuevo
  * @method modelCreateReward
  * @async
@@ -39,9 +40,7 @@ const modelCreateReward = async ({ user_id, place_id, reward }) => {
 };
 
 
-
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para obtener todos los rewards.
  * @method modelGetRewards
  * @async
@@ -71,9 +70,7 @@ const modelGetRewards = async () => {
 };
 
 
-
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer los rewards de un usuario a través de su email.
  * @method modelGetUserRewards
  * @async
@@ -104,8 +101,7 @@ console.log('email',email);
 };
 
 
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer los rewards de un establecimiento a través de su email.
  * @method modelGetPlaceRewards
  * @async

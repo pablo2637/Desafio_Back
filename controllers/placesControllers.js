@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { generateJwt, renewToken } = require('../helpers/jwt')
+const { generateJwt, 
+        renewToken } = require('../helpers/jwt')
 
 const {
     getAllPlaces,
@@ -14,11 +15,19 @@ const {
 } = require('../models/placesModel')
 
 
-//*PLACES CONTROLLERS
+//*Places CONTROLLERS
 
-
+/**DOCS
+ * Hace la consulta a la base de datos y devuelve todos los places.
+ * @method getAllPlacesControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los places de la base de datos.
+ * @throws {Error}
+ */
 //Get All Places ++++++++++
-const getAllPlacesControl = async (req, res) => {//*operative
+const getAllPlacesControl = async (req, res) => {
 
     let data;
 
@@ -48,8 +57,18 @@ const getAllPlacesControl = async (req, res) => {//*operative
 };
 
 
+/**DOCS
+ * Hace la consulta a la BBDD alojada en AWS proporcionada por DATA
+ * y devuelve todos los restaurants. (establecimientos afiliados)
+ * @method getAllRestaurantsControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los places de la base de datos.
+ * @throws {Error}
+ */
 //Get All Restaurants ++++++++++
-const getAllRestaurantsControl = async (req, res) => {//*operative
+const getAllRestaurantsControl = async (req, res) => {
 
     let data;
 
@@ -79,9 +98,17 @@ const getAllRestaurantsControl = async (req, res) => {//*operative
 };
 
 
-
+/**DOCS
+ * Hace la consulta a la base de datos y devuelve un single place, por teléfono que encuentre.
+ * @method getPlaceByPhoneControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con un place, con número de teléfono coincidente
+ * @throws {Error}
+ */
 //Get place by phone +++++++
-const getPlaceByPhoneControl = async (req, res) => { //*operative
+const getPlaceByPhoneControl = async (req, res) => {
 
     let data, phone;
     phone = req.params.phone;
@@ -112,8 +139,20 @@ const getPlaceByPhoneControl = async (req, res) => { //*operative
     }
 }
 
+
+/**DOCS
+ * Hace la consulta a la base de datos para crear una entrada "place".
+ * Afilia un restaurant a la tabla places.
+ * @method createPlaceControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta.
+ * Dentro del body debe tener los campos: place_name, address, coords, phone, contact_name, password.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los datos de un place creado.
+ * @throws {Error}
+ */
 //Create place +++++++++
-const createPlaceControl = async ({ body }, res) => { //*operative
+const createPlaceControl = async ({ body }, res) => {
 
     try {
 
@@ -152,8 +191,19 @@ const createPlaceControl = async ({ body }, res) => { //*operative
     }
 }
 
+
+/**DOCS
+ * Hace la consulta a la base de datos para modificar los datos de una entrada "place".
+ * @method updatePlaceControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta. Recibe Body y place_id. Se captura de los params.
+ * Dentro del body debe tener los campos: place_name, address, coords, phone, contact_name.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Con los datos de un place actualizado.
+ * @throws {Error}
+ */
 //Update place +++++++++
-const updatePlaceControl = async (req, res) => { //*operative
+const updatePlaceControl = async (req, res) => {
 
     let data, place_id, body;
     place_id = req.params.id;
@@ -185,8 +235,18 @@ const updatePlaceControl = async (req, res) => { //*operative
     }
 }
 
+
+/**DOCS
+ * Hace la consulta a la base de datos para eliminar una entrada "place".
+ * @method deletePlaceControl
+ * @async
+ * @param {Object} req Es el requerimiento de la ruta. Recibe el email que capturamos en los params.
+ * @param {Object} res Es la respuesta de la ruta.
+ * @returns {jon} Un ok:true si la petición es exitosa.
+ * @throws {Error}
+ */
 //Delete place +++++++++
-const deletePlaceControl = async (req, res) => { //*operative
+const deletePlaceControl = async (req, res) => {
 
     let data, email;
     email = req.params.email
@@ -217,8 +277,7 @@ const deletePlaceControl = async (req, res) => { //*operative
 }
 
 
-
-/**
+/**DOCS
  * Devuelve todos los usuarios.
  * @method loginPlace
  * @async
@@ -228,6 +287,7 @@ const deletePlaceControl = async (req, res) => { //*operative
  * @returns {jon} Con el usuario de la base de datos.
  * @throws {Error}
  */
+//Login place +++++++++
 const loginPlace = async ({ body }, res) => {
 
     try {
@@ -277,8 +337,7 @@ const loginPlace = async ({ body }, res) => {
 };
 
 
-
-/**
+/**DOCS
  * Se verifica que el token sea válido, si lo es, continúa al siguiente
  * paso y crea una cookie con los datos del usuario obtenidos del token.
  * Si el token no es válido, se redirige a 'login'.
@@ -290,6 +349,7 @@ const loginPlace = async ({ body }, res) => {
  * @param {Function} next Continúa al siguiente middleware
  * @throws Redirige a la página de login
  */
+//Validate Place Token +++++++++
 const validatePlaceJWT = async ({ body }, res) => {
 
     const token = body.token;
@@ -338,9 +398,6 @@ const validatePlaceJWT = async ({ body }, res) => {
         });
 
 };
-
-
-
 
 
 module.exports = {

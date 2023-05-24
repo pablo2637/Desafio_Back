@@ -10,24 +10,19 @@ const {
 } = require('../controllers/controllerRecycle');
 
 
-
 router.get('/:user_id', getSumRecycles)
 
 
 router.get('/', getRecycles);
 
 
-
 router.get('/user/:id', getUserRecycles);
-
 
 
 router.get('/place/:id', getPlacesRecycles);
 
 
-
 router.post('/', createRecycle);
-
 
 
 module.exports = router;

@@ -9,21 +9,16 @@ const {
 } = require('../controllers/controllerRewards');
 
 
-
 router.get('/', getRewards);
-
 
 
 router.get('/user/:email', getUserRewards);
 
 
-
 router.get('/place/:email', getPlacesRewards);
 
 
-
 router.post('/', createReward);
-
 
 
 module.exports = router;
