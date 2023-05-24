@@ -1,4 +1,4 @@
-# psyCare_Back_K
+# Desafío Back
 *Repositorio Back-end del desafío de tripulaciones, The Bridge, Madrid, 2023.*
 
 #### **Endpoints to handle Data Base (SQL - ELEPHANT)**
