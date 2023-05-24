@@ -1,4 +1,5 @@
 const FormData = require('form-data');
+const axios = require('axios');
 
 /** DOCS
  * 
@@ -23,7 +24,10 @@ const masterFetchData = async (place_id) => {
             method: 'POST',
             body: formData
         };
-        let respuesta = await fetch(urlBase, options);
+        // let respuesta = await fetch(urlBase, options);
+        let respuesta = await axios.post(urlBase, formData, {
+            headers: formData.getHeaders()
+        })
 
         /**
          * consulta realizada a través de parámetro URL y las OPTIONS (method,body)
