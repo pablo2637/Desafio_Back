@@ -115,7 +115,7 @@ const queriesRecycle = {
                             INNER JOIN restaurants AS e ON p.rest_id = e.id
                             WHERE u.user_id = $1;`,
 
-    getPlacesRecyclesByID: `SELECT r.register_date, u.name, u.user_id, u.email, e.name as place_name, e.phone, r.qty, r.reward
+    getPlacesRecyclesByID: `SELECT r.rec_id, r.register_date, u.name, u.user_id, u.email, e.name as place_name, e.phone, r.qty, r.reward
                 FROM recycle AS r
                 INNER JOIN users AS u
                 ON r.user_id=u.user_id
