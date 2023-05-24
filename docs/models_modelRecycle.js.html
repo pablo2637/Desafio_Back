@@ -32,9 +32,9 @@ const {
     queriesRecycle
 } = require('./queries');
 
+//*Recycles models (intercambio de reciclajes)
 
-
-/**
+/**DOCS
  * Inserta en la base de datos un reciclaje nuevo
  * @method modelCreateRecycle
  * @async
@@ -44,14 +44,14 @@ const {
  * @returns {json} 
  * @throws {Error}
  */
-const modelCreateRecycle = async ({ user_id, place_id, qty }) => {
+const modelCreateRecycle = async ({ user_id, place_id, qty, reward }) => {
 
     let client, result;
     try {
 
         client = await pool.connect();
 
-        const data = await client.query(queriesRecycle.createRecycle, [user_id, place_id, qty])
+        const data = await client.query(queriesRecycle.createRecycle, [user_id, place_id, qty, reward])
 
         data.rowCount != 0 ? result = data.rows : result = false;
 
@@ -67,9 +67,7 @@ const modelCreateRecycle = async ({ user_id, place_id, qty }) => {
 };
 
 
-
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para obtener todos los reciclajes.
  * @method modelGetRecycles
  * @async
@@ -99,9 +97,69 @@ const modelGetRecycles = async () => {
 };
 
 
+/**DOCS
+ * Hace la consulta a la base de datos para traer los reciclajes de un usuario a través de su id.
+ * @method modelGetUserRecycles
+ * @async
+ * @param {String} id id del usuario
+ * @returns {json} Los reciclajes
+ * @throws {Error}
+ */
+const modelGetUserRecycles = async (id) => {
+
+    let client, result;
+    try {
+
+        client = await pool.connect();
+
+        const data = await client.query(queriesRecycle.getUserRecyclesByID, [id])
+
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
 
 
-/**
+/**DOCS
+ * Hace la consulta a la base de datos para traer los reciclajes de un establecimiento a través de su email.
+ * @method modelGetPlaceRecycles
+ * @async
+ * @param {String} id ID del establecimiento
+ * @returns {json} Los reciclajes
+ * @throws {Error}
+ */
+const modelGetPlaceRecycles = async (id) => {
+
+    let client, result;
+    try {
+
+        client = await pool.connect();
+
+        const data = await client.query(queriesRecycle.getPlacesRecyclesByID, [id])
+
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
+
+/**DOCS
  * Hace la consulta a la base de datos para traer los reciclajes de un usuario a través de su email.
  * @method modelGetUserRecycles
  * @async
@@ -109,14 +167,14 @@ const modelGetRecycles = async () => {
  * @returns {json} Los reciclajes
  * @throws {Error}
  */
-const modelGetUserRecycles = async (email) => {
+const modelGetSumRecycles = async (user_id) => {
 
     let client, result;
     try {
 
         client = await pool.connect();
 
-        const data = await client.query(queriesRecycle.getUserRecyclesByEmail, [email])
+        const data = await client.query(queriesRecycle.sumRecycle, [user_id])
 
         data.rowCount != 0 ? result = data.rows : result = false;
 
@@ -130,45 +188,13 @@ const modelGetUserRecycles = async (email) => {
 
     return result;
 };
-
-
-
-/**
- * Hace la consulta a la base de datos para traer los reciclajes de un establecimiento a través de su email.
- * @method modelGetPlaceRecycles
- * @async
- * @param {String} email Correo electrónico del establecimiento
- * @returns {json} Los reciclajes
- * @throws {Error}
- */
-const modelGetPlaceRecycles = async (email) => {
-
-    let client, result;
-    try {
-
-        client = await pool.connect();
-
-        const data = await client.query(queriesRecycle.getPlacesRecyclesByEmail, [email])
-
-        data.rowCount != 0 ? result = data.rows : result = false;
-
-    } catch (e) {
-        throw e;
-
-    } finally {
-        client.release();
-
-    };
-
-    return result;
-};
-
 
 module.exports = {
     modelGetRecycles,
     modelCreateRecycle,
     modelGetUserRecycles,
-    modelGetPlaceRecycles
+    modelGetPlaceRecycles,
+    modelGetSumRecycles
 }</code></pre>
         </article>
     </section>
@@ -179,13 +205,13 @@ module.exports = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createRecycle">createRecycle</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#getPlacesRecycles">getPlacesRecycles</a></li><li><a href="global.html#getRecycles">getRecycles</a></li><li><a href="global.html#getUserRecycles">getUserRecycles</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#modelCreateRecycle">modelCreateRecycle</a></li><li><a href="global.html#modelCreateUser">modelCreateUser</a></li><li><a href="global.html#modelGetPlaceRecycles">modelGetPlaceRecycles</a></li><li><a href="global.html#modelGetRecycles">modelGetRecycles</a></li><li><a href="global.html#modelGetUserRecycles">modelGetUserRecycles</a></li><li><a href="global.html#modelGetUsers">modelGetUsers</a></li><li><a href="global.html#modelUpdateUser">modelUpdateUser</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Insertcomm">Insertcomm</a></li><li><a href="global.html#UpdateComm">UpdateComm</a></li><li><a href="global.html#createPlace">createPlace</a></li><li><a href="global.html#createPlaceControl">createPlaceControl</a></li><li><a href="global.html#createRecycle">createRecycle</a></li><li><a href="global.html#createReward">createReward</a></li><li><a href="global.html#createUser">createUser</a></li><li><a href="global.html#deleteComm">deleteComm</a></li><li><a href="global.html#deletePlace">deletePlace</a></li><li><a href="global.html#deletePlaceControl">deletePlaceControl</a></li><li><a href="global.html#generateJwt">generateJwt</a></li><li><a href="global.html#getAllComm">getAllComm</a></li><li><a href="global.html#getAllPlaces">getAllPlaces</a></li><li><a href="global.html#getAllPlacesControl">getAllPlacesControl</a></li><li><a href="global.html#getAllRestaurants">getAllRestaurants</a></li><li><a href="global.html#getAllRestaurantsControl">getAllRestaurantsControl</a></li><li><a href="global.html#getPlaceByPhone">getPlaceByPhone</a></li><li><a href="global.html#getPlaceByPhoneControl">getPlaceByPhoneControl</a></li><li><a href="global.html#getPlacesRecycles">getPlacesRecycles</a></li><li><a href="global.html#getPlacesRewards">getPlacesRewards</a></li><li><a href="global.html#getRecycles">getRecycles</a></li><li><a href="global.html#getRewards">getRewards</a></li><li><a href="global.html#getSumRecycles">getSumRecycles</a></li><li><a href="global.html#getUserRecycles">getUserRecycles</a></li><li><a href="global.html#getUserRewards">getUserRewards</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#loginPlace">loginPlace</a></li><li><a href="global.html#loginUser">loginUser</a></li><li><a href="global.html#modelCreateRecycle">modelCreateRecycle</a></li><li><a href="global.html#modelCreateReward">modelCreateReward</a></li><li><a href="global.html#modelCreateUser">modelCreateUser</a></li><li><a href="global.html#modelDeleteComm">modelDeleteComm</a></li><li><a href="global.html#modelGetAllComm">modelGetAllComm</a></li><li><a href="global.html#modelGetPasswordByID">modelGetPasswordByID</a></li><li><a href="global.html#modelGetPlaceRecycles">modelGetPlaceRecycles</a></li><li><a href="global.html#modelGetPlaceRewards">modelGetPlaceRewards</a></li><li><a href="global.html#modelGetRecycles">modelGetRecycles</a></li><li><a href="global.html#modelGetRewards">modelGetRewards</a></li><li><a href="global.html#modelGetUserRecycles">modelGetUserRecycles</a></li><li><a href="global.html#modelGetUserRewards">modelGetUserRewards</a></li><li><a href="global.html#modelGetUsers">modelGetUsers</a></li><li><a href="global.html#modelInsertComm">modelInsertComm</a></li><li><a href="global.html#modelUpdateComm">modelUpdateComm</a></li><li><a href="global.html#modelUpdateUser">modelUpdateUser</a></li><li><a href="global.html#renewToken">renewToken</a></li><li><a href="global.html#updatePlace">updatePlace</a></li><li><a href="global.html#updatePlaceControl">updatePlaceControl</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue May 16 2023 21:27:51 GMT+0200 (hora de verano de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed May 24 2023 23:35:22 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -15,7 +15,6 @@ const {
     updatePlaceControl } = require('../controllers/placesControllers');
 
 
-
 //*Routers
 //Get All Places ++++++++++
 router.get('/', getAllPlacesControl);
@@ -23,7 +22,6 @@ router.get('/', getAllPlacesControl);
 
 //Get All Restaurants ++++++++++
 router.get('/restaurants', getAllRestaurantsControl);
-
 
 
 //Login place ++++++++++
@@ -36,6 +34,7 @@ router.post('/renew/', validatePlaceJWT);
 
 //Get Place by email
 router.get('/:phone', getPlaceByPhoneControl);
+
 
 //Create Place ++++++++++
 router.post('/create', [
@@ -50,8 +49,10 @@ router.post('/create', [
 
 ], createPlaceControl);
 
+
 //Update Place ++++++++++
 router.put('/:id', updatePlaceControl);
+
 
 //Delete Place ++++++++++
 router.delete('/:email', deletePlaceControl);
