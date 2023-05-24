@@ -31,7 +31,7 @@ const masterFetchData = async (place_id) => {
          */
         let resp = await respuesta;
 
-        console.log('esto es RESP_DATA en Fetch', resp.data)
+        // console.log('esto es RESP_DATA en Fetch', resp.data)
 
         return resp.data;
 
