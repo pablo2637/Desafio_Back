@@ -1,3 +1,4 @@
+const FormData = require('form-data');
 
 /** DOCS
  * 
