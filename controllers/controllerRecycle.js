@@ -1,3 +1,5 @@
+const { masterFetchData } = require('../helpers/fetch')
+
 const {
     modelCreateRecycle,
     modelGetRecycles,
@@ -5,6 +7,10 @@ const {
     modelGetPlaceRecycles,
     modelGetSumRecycles
 } = require('../models/modelRecycle');
+
+const {
+    modelUpdateRecommendations
+} = require('../models/modelUsers')
 
 
 //*Recycles CONTROLLERS
@@ -26,10 +32,22 @@ const createRecycle = async ({ body }, res) => {
 
         const data = await modelCreateRecycle(body);
 
-        if (data) return res.status(200).json({
-            ok: true,
-            data
-        });
+        if (data) {
+
+            let rec = [];
+            if (body.qty == 0) {
+                rec = await masterFetchData(body.rest_id);
+
+                await modelUpdateRecommendations(body.user_id, rec);
+            }
+
+            return res.status(200).json({
+                ok: true,
+                data,
+                recommended: rec
+            });
+
+        }
 
     } catch (e) {
         console.log('catchError en createRecycle:', e);

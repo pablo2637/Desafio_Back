@@ -74,7 +74,7 @@ const queriesUser = {
                 ON r.user_id=u.user_id
                 ORDER BY u.register_date;`,
 
-    getUserByEmail: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role
+    getUserByEmail: `SELECT u.user_id, u.name, u.last_name, u.email, u.avatar, r.role, u.recommended
                     FROM users AS u                
                     INNER JOIN roles AS r
                     ON r.user_id=u.user_id
@@ -91,6 +91,10 @@ const queriesUser = {
                             avatar=$4,
                             password=$5                            
                         WHERE user_id=$6;`,
+
+    updateRecommendations: `UPDATE users
+                            SET recommended=$1                                
+                            WHERE user_id=$2;`,
 
     getUserPass: `SELECT password
                     FROM users AS u
@@ -113,18 +117,16 @@ const queriesRecycle = {
                             INNER JOIN users AS u ON r.user_id = u.user_id
                             INNER JOIN places AS p ON p.place_id = r.place_id
                             INNER JOIN restaurants AS e ON p.rest_id = e.id
-                            WHERE u.user_id = $1
-                            ORDER BY r.register_date;`,
+                            WHERE u.user_id = $1;`,
 
-    getPlacesRecyclesByID: `SELECT r.register_date, u.name, u.user_id, u.email, e.name as place_name, e.phone, r.qty, r.reward
+    getPlacesRecyclesByID: `SELECT r.rec_id, r.register_date, u.name, u.user_id, u.email, e.name as place_name, e.phone, r.qty, r.reward
                 FROM recycle AS r
                 INNER JOIN users AS u
                 ON r.user_id=u.user_id
                 INNER JOIN places AS p
                 ON p.place_id=r.place_id
                 INNER JOIN restaurants AS e ON p.rest_id = e.id
-                WHERE p.place_id=$1
-                ORDER BY r.register_date;`,
+                WHERE p.place_id=$1;`,
 
 
     check1000Points: `SELECT user_id

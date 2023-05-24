@@ -178,6 +178,39 @@ const modelGetUserByEmail = async (email) => {
 
 
 /**DOCS
+
+/**
+ * Hace la consulta a la base de datos para actualizar los restaurantes recomendadosa través de su id.
+ * @method modelUpdateRecommendations
+ * @async
+ * @param {String} id ID del usuario
+ * @returns {json} Con los usuarios
+ * @throws {Error}
+ */
+const modelUpdateRecommendations = async (id, recommended) => {
+
+    let client, result;
+    try {
+
+        client = await pool.connect();
+
+        const data = await client.query(queriesUser.updateRecommendations, [recommended, id])
+
+        data.rowCount != 0 ? result = data.rows : result = false;
+
+    } catch (e) {
+        throw e;
+
+    } finally {
+        client.release();
+
+    };
+
+    return result;
+};
+
+
+/**
  * Hace la consulta a la base de datos para traer el password del usuario a través de su id.
  * @method modelGetPasswordByID
  * @async
@@ -189,11 +222,11 @@ const modelGetPasswordByID = async (id) => {
 
     let client, result;
     try {
-        
+
         client = await pool.connect();
 
         const data = await client.query(queriesUser.getUserPass, [id])
-        
+
         data.rowCount != 0 ? result = data.rows : result = false;
 
     } catch (e) {
@@ -213,5 +246,6 @@ module.exports = {
     modelCreateUser,
     modelGetUsers,
     modelUpdateUser,
-    modelGetUserByEmail
+    modelGetUserByEmail,
+    modelUpdateRecommendations
 }

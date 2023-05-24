@@ -1,8 +1,11 @@
-PORT=
+PORT= Puerto del servidor
 
+Parametros de conexión de Elephant:
 ELEPHANT_USER=
 ELEPHANT_PASS=
 ELEPHANT_HOST=
 ELEPHANT_DB=
 
-SECRET_KEY=
+SECRET_KEY= Clave secreta para generar el jsonWebToken
+
+DATA_URL= url del endpoint de Data Science
