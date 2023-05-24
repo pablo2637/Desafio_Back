@@ -37,13 +37,13 @@ const createRecycle = async ({ body }, res) => {
                 rec = await masterFetchData(body.rest_id);
 
                 await modelUpdateRecommendations(body.user_id, rec);
-
-                return res.status(200).json({
-                    ok: true,
-                    data,
-                    recommended: rec
-                });
             }
+
+            return res.status(200).json({
+                ok: true,
+                data,
+                recommended: rec
+            });
 
         }
 
