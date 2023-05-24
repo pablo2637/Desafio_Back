@@ -1,13 +1,21 @@
 const { pool } = require('../configs/configPostgreSQL');
-const { queriesPlaces, queriesRoles, queriesRestaurants } = require('./queries');
 
 const bcrypt = require('bcryptjs');
 
-//*APPOINTMENTS CONTROLLERS
+const { queriesPlaces, 
+        queriesRoles, 
+        queriesRestaurants } = require('./queries');
 
+//*Places/restaurants models
 
-
-//Get All Places ++++++++++
+/**DOCS
+ * Petición a la BBDD para obtener todos los places. (un establecimiento afiliado)
+ * @method getAllPlaces
+ * @async
+ * @returns {json} Con los places
+ * @throws {Error}
+ */
+//Get All Places
 const getAllPlaces = async () => { //*operative
 
     let client, result;
@@ -32,6 +40,13 @@ const getAllPlaces = async () => { //*operative
 };
 
 
+/**DOCS
+ * Petición a la BBDD en AWS mediante DATA endpoint para obtener todos los "restaurants".
+ * @method getAllRestaurants
+ * @async
+ * @returns {json} Con los restaurants
+ * @throws {Error}
+ */
 //Get All Restaurants ++++++++++
 const getAllRestaurants = async () => { //*operative
 
@@ -57,9 +72,15 @@ const getAllRestaurants = async () => { //*operative
 };
 
 
-
+/**DOCS
+ * Petición a la BBDD para obtener un single place, por número de teléfono.
+ * @method getPlaceByPhone
+ * @async
+ * @returns {json} Con el restaurante coincidente
+ * @throws {Error}
+ */
 //Get Place by place Phone ++++++++
-const getPlaceByPhone = async (phone) => { //*operative
+const getPlaceByPhone = async (phone) => {
 
     let client, result;
 
@@ -83,9 +104,22 @@ const getPlaceByPhone = async (phone) => { //*operative
 };
 
 
-
+/** DOCS
+ * Inserta en la base de datos un place nuevo (un establecimiento afiliado)
+ * @method createPlace
+ * @async
+ * @param {String} place_name ID del place
+ * @param {String} address dirección del establecimiento
+ * @param {String} coords Coordenadas del establecimiento
+ * @param {String} phone teléfono del place
+ * @param {String} email correp del establecimiento
+ * @param {String} contact_name nombre de contacto del establecimiento
+ * @param {String} password correp del establecimiento
+ * @returns {json} 
+ * @throws {Error}
+ */
 //Create Place
-const createPlace = async (data) => { //*operative
+const createPlace = async (data) => {
 
     let client, result;
     const { place_name, address, coords, phone, email, contact_name, password: newPassword } = data;
@@ -114,9 +148,21 @@ const createPlace = async (data) => { //*operative
 };
 
 
-
+/** DOCS
+ * Petición a la base de datos para modificar un place existente (un establecimiento afiliado)
+ * @method updatePlace
+ * @async
+ * @param {String} place_name ID del place
+ * @param {String} address dirección del establecimiento
+ * @param {String} coords Coordenadas del establecimiento
+ * @param {String} phone teléfono del place
+ * @param {String} email correo del establecimiento
+ * @param {String} contact_name nombre de contacto del establecimiento
+ * @returns {json} 
+ * @throws {Error}
+ */
 //Update Place
-const updatePlace = async (body, place_id) => { //*operative
+const updatePlace = async (body, place_id) => {
 
     let client, result;
 
@@ -142,9 +188,17 @@ const updatePlace = async (body, place_id) => { //*operative
 };
 
 
-
+/** DOCS
+ * Petición a la base de datos para eliminar un place existente a través
+ * a través del email (un establecimiento afiliado)
+ * @method deletePlace
+ * @async
+ * @param {String} email correo del establecimiento
+ * @returns {json} 
+ * @throws {Error}
+ */
 //Delete Place
-const deletePlace = async (email) => { //*operative
+const deletePlace = async (email) => {
 
     let client, result;
 
@@ -166,8 +220,7 @@ const deletePlace = async (email) => { //*operative
 };
 
 
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer el password del establecimiento a través de su id.
  * @method modelGetPasswordByID
  * @async

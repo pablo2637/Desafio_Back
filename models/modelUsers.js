@@ -7,8 +7,9 @@ const {
     queriesRoles
 } = require('./queries');
 
+//*Users models
 
-/**
+/**DOCS
  * Crea un usuario nuevo.
  * @method modelCreateUser
  * @async
@@ -48,8 +49,7 @@ const modelCreateUser = async ({ name, last_name, email, avatar, password }) => 
 };
 
 
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para obtener todos los usuarios.
  * @method modelGetUsers
  * @async
@@ -79,8 +79,7 @@ const modelGetUsers = async () => {
 };
 
 
-
-/**
+/**DOCS
  * La petición a la base de datos para modificar un usuario.
  * @method modelUpdateUser
  * @async
@@ -147,8 +146,7 @@ const modelUpdateUser = async ({ name, last_name, email, avatar, password }, id)
 };
 
 
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer el usuario a través de su email.
  * @method modelGetUsers
  * @async
@@ -179,8 +177,7 @@ const modelGetUserByEmail = async (email) => {
 };
 
 
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer el password del usuario a través de su id.
  * @method modelGetPasswordByID
  * @async

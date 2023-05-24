@@ -4,9 +4,9 @@ const {
     queriesRecycle
 } = require('./queries');
 
+//*Recycles models (intercambio de reciclajes)
 
-
-/**
+/**DOCS
  * Inserta en la base de datos un reciclaje nuevo
  * @method modelCreateRecycle
  * @async
@@ -39,9 +39,7 @@ const modelCreateRecycle = async ({ user_id, place_id, qty, reward }) => {
 };
 
 
-
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para obtener todos los reciclajes.
  * @method modelGetRecycles
  * @async
@@ -71,9 +69,7 @@ const modelGetRecycles = async () => {
 };
 
 
-
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer los reciclajes de un usuario a través de su id.
  * @method modelGetUserRecycles
  * @async
@@ -104,8 +100,7 @@ const modelGetUserRecycles = async (id) => {
 };
 
 
-
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer los reciclajes de un establecimiento a través de su email.
  * @method modelGetPlaceRecycles
  * @async
@@ -136,7 +131,7 @@ const modelGetPlaceRecycles = async (id) => {
 };
 
 
-/**
+/**DOCS
  * Hace la consulta a la base de datos para traer los reciclajes de un usuario a través de su email.
  * @method modelGetUserRecycles
  * @async

@@ -13,7 +13,6 @@ const {
     validateJWT
 } = require('../controllers/controllerUsers');
 
-
 router.get('/', getUsers);
 
 
@@ -26,7 +25,6 @@ router.post('/login', loginUser);
 router.post('/renew/', validateJWT);
 
 
-
 router.post('/', [
     check('name', 'El nombre es obligatorio.').trim().not().isEmpty(),
     check('last_name', 'El apellido es obligatorio.').trim().not().isEmpty(),
@@ -36,7 +34,6 @@ router.post('/', [
 ], createUser);
 
 
-
 router.put('/:id', [
     check('name', 'El nombre es obligatorio.').trim().not().isEmpty(),
     check('last_name', 'El apellido es obligatorio.').trim().not().isEmpty(),
@@ -44,7 +41,6 @@ router.put('/:id', [
     check('email', 'El email es obligatorio, por favor, verifícalo.').trim().isEmail().normalizeEmail(),
     validateInputs
 ], updateUser);
-
 
 
 module.exports = router;

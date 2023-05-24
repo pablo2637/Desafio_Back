@@ -5,9 +5,9 @@ const {
     modelGetUserRewards
 } = require('../models/modelRewards');
 
+//*Rewards CONTROLLERS
 
-
-/**
+/**DOCS
  * Crea un nuevo reward.
  * @method createReward
  * @async
@@ -17,6 +17,7 @@ const {
  * @returns {jon} Con los datos del reward creado.
  * @throws {Error}
  */
+//Create reward ++++++++++
 const createReward = async ({ body }, res) => {
 
     try {
@@ -41,10 +42,7 @@ const createReward = async ({ body }, res) => {
 };
 
 
-
-
-
-/**
+/**DOCS
  * Devuelve todos los reciclajes.
  * @method getRewards
  * @async
@@ -53,6 +51,7 @@ const createReward = async ({ body }, res) => {
  * @returns {jon} Con los reciclajes de la base de datos.
  * @throws {Error}
  */
+//Get All reward ++++++++++
 const getRewards = async (req, res) => {
 
     try {
@@ -81,9 +80,7 @@ const getRewards = async (req, res) => {
 };
 
 
-
-
-/**
+/**DOCS
  * Devuelve todos los rewards de un usuario a través de su correo electrónico.
  * @method getUserRewards
  * @async
@@ -93,6 +90,7 @@ const getRewards = async (req, res) => {
  * @returns {jon} Con los rewards
  * @throws {Error}
  */
+//Get rewards asociated to User ++++++++++
 const getUserRewards = async ({ params }, res) => {
 
     try {
@@ -124,10 +122,7 @@ const getUserRewards = async ({ params }, res) => {
 };
 
 
-
-
-
-/**
+/**DOCS
  * Devuelve todos los rewards de un establecimiento.
  * @method getPlacesRewards
  * @async
@@ -137,6 +132,7 @@ const getUserRewards = async ({ params }, res) => {
  * @returns {jon} Con los rewards.
  * @throws {Error}
  */
+//Get rewards asociated to places ++++++++++
 const getPlacesRewards = async ({ params }, res) => {
 
     try {
@@ -166,6 +162,8 @@ const getPlacesRewards = async ({ params }, res) => {
 
     };
 };
+
+
 module.exports = {
     createReward,
     getRewards,

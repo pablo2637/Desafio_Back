@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: models/modelUsers.js</title>
+    <title>JSDoc: Source: models/placesModel.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: models/modelUsers.js</h1>
+    <h1 class="page-title">Source: models/placesModel.js</h1>
 
     
 
@@ -30,186 +30,229 @@
 
 const bcrypt = require('bcryptjs');
 
-const {
-    queriesUser,
-    queriesRoles
-} = require('./queries');
+const { queriesPlaces, 
+        queriesRoles, 
+        queriesRestaurants } = require('./queries');
 
-//*Users models
+//*Places/restaurants models
 
 /**DOCS
- * Crea un usuario nuevo.
- * @method modelCreateUser
+ * Petición a la BBDD para obtener todos los places. (un establecimiento afiliado)
+ * @method getAllPlaces
  * @async
- * @param {String} name Nombre del usuario
- * @param {String} last_name Apellido del usuario
- * @param {String} email Correo electrónico
- * @param {String} avatar URL de la imagen del usuario  
- * @param {String} password Contraseña
- * @returns {json}
+ * @returns {json} Con los places
  * @throws {Error}
  */
-const modelCreateUser = async ({ name, last_name, email, avatar, password }) => {
+//Get All Places
+const getAllPlaces = async () => { //*operative
 
     let client, result;
+
     try {
 
         client = await pool.connect();
+        result = await client.query(queriesPlaces.allPlacesQuery);
 
-        const salt = bcrypt.genSaltSync(10);
-        password = bcrypt.hashSync(password, salt);
 
-        const data = await client.query(queriesUser.createUser, [name, last_name, email, avatar, password])
+    } catch (error) {
 
-        await client.query(queriesRoles.insertRol, [data.rows[0].user_id, 'user']);
+        console.log('Model Failed getting all stablishments')
+        throw error
+    }
 
-        data.rowCount != 0 ? result = data.rows : result = false;
+    finally {
 
-    } catch (e) {
-        throw e;
-
-    } finally {
         client.release();
-
-    };
-
+    }
     return result;
 };
 
 
 /**DOCS
- * Hace la consulta a la base de datos para obtener todos los usuarios.
- * @method modelGetUsers
+ * Petición a la BBDD en AWS mediante DATA endpoint para obtener todos los "restaurants".
+ * @method getAllRestaurants
  * @async
- * @returns {json} Con los usuarios
+ * @returns {json} Con los restaurants
  * @throws {Error}
  */
-const modelGetUsers = async () => {
+//Get All Restaurants ++++++++++
+const getAllRestaurants = async () => { //*operative
 
     let client, result;
+
     try {
 
         client = await pool.connect();
+        result = await client.query(queriesRestaurants.getRestaurants);
 
-        const data = await client.query(queriesUser.getUsers)
 
-        data.rowCount != 0 ? result = data.rows : result = false;
+    } catch (error) {
 
-    } catch (e) {
-        throw e;
+        console.log('Model Failed getting all restaurants')
+        throw error
+    }
 
-    } finally {
+    finally {
+
         client.release();
-
-    };
-
+    }
     return result;
 };
 
 
 /**DOCS
- * La petición a la base de datos para modificar un usuario.
- * @method modelUpdateUser
+ * Petición a la BBDD para obtener un single place, por número de teléfono.
+ * @method getPlaceByPhone
  * @async
- * @param {String} name Nombre del usuario
- * @param {String} last_name Apellido del usuario
- * @param {String} email Correo electrónico
- * @param {String} avatar URL de la imagen del usuario  
- * @param {String} password Contraseña
- * @param {String} id ID del usuario a modificar
- * @returns {json}
+ * @returns {json} Con el restaurante coincidente
  * @throws {Error}
  */
-const modelUpdateUser = async ({ name, last_name, email, avatar, password }, id) => {
+//Get Place by place Phone ++++++++
+const getPlaceByPhone = async (phone) => {
 
-    let client, rslt, isPassOK;
+    let client, result;
 
     try {
 
         client = await pool.connect();
+        result = await client.query(queriesPlaces.placeByPhoneQuery, [phone]);
 
-        const data = await client.query(queriesUser.getUserPass, [id]);
 
-        isPassOK = bcrypt.compareSync(password, data.rows[0].password);
+    } catch (error) {
 
-        if (isPassOK) {
+        console.log('Model Failed getting single stablishment')
+        throw error
+    }
 
-            const salt = bcrypt.genSaltSync(10);
-            password = bcrypt.hashSync(password, salt);
+    finally {
 
-            rslt = await client.query(queriesUser.updateUser, [name, last_name, email, avatar, password, id]);
-        }
-
-    } catch (e) {
-        throw e;
-
-    } finally {
         client.release();
-
-    };
-
-
-    if (!isPassOK)
-        return {
-            ok: false,
-            msg: 'El password proporcionado no coincide con el de la base de datos'
-        }
-
-
-    if (rslt.rowCount == 0)
-        return {
-            ok: false,
-            response: {
-                msg: 'Fallo al intentar modificar el usuario.',
-                id,
-                rslt
-            }
-        };
-
-    return {
-        ok: true,
-        response: rslt.rows[0]
-    };
-
+    }
+    return result;
 };
 
 
-/**DOCS
- * Hace la consulta a la base de datos para traer el usuario a través de su email.
- * @method modelGetUsers
+/** DOCS
+ * Inserta en la base de datos un place nuevo (un establecimiento afiliado)
+ * @method createPlace
  * @async
- * @param {String} email Correo electrónico del usuario
- * @returns {json} Con los usuarios
+ * @param {String} place_name ID del place
+ * @param {String} address dirección del establecimiento
+ * @param {String} coords Coordenadas del establecimiento
+ * @param {String} phone teléfono del place
+ * @param {String} email correp del establecimiento
+ * @param {String} contact_name nombre de contacto del establecimiento
+ * @param {String} password correp del establecimiento
+ * @returns {json} 
  * @throws {Error}
  */
-const modelGetUserByEmail = async (email) => {
+//Create Place
+const createPlace = async (data) => {
 
     let client, result;
+    const { place_name, address, coords, phone, email, contact_name, password: newPassword } = data;
+
+    const salt = bcrypt.genSaltSync(10);
+    const password = bcrypt.hashSync(newPassword, salt);
+
     try {
 
         client = await pool.connect();
+        result = await client.query(queriesPlaces.createPlaceQuery, [place_name, address, coords, phone, email, contact_name, password]);
 
-        const data = await client.query(queriesUser.getUserByEmail, [email])
+        await client.query(queriesRoles.insertRolPlaces, [result.rows[0].place_id, 'place']);
 
-        data.rowCount != 0 ? result = data.rows : result = false;
+    } catch (error) {
 
-    } catch (e) {
-        throw e;
+        console.log('Model Failed creating single stablishment')
+        throw error
+    }
 
-    } finally {
+    finally {
+
         client.release();
+    }
+    return result;
+};
 
-    };
 
+/** DOCS
+ * Petición a la base de datos para modificar un place existente (un establecimiento afiliado)
+ * @method updatePlace
+ * @async
+ * @param {String} place_name ID del place
+ * @param {String} address dirección del establecimiento
+ * @param {String} coords Coordenadas del establecimiento
+ * @param {String} phone teléfono del place
+ * @param {String} email correo del establecimiento
+ * @param {String} contact_name nombre de contacto del establecimiento
+ * @returns {json} 
+ * @throws {Error}
+ */
+//Update Place
+const updatePlace = async (body, place_id) => {
+
+    let client, result;
+
+    console.log(body)
+
+    const { place_name, address, coords, phone, email, contact_name } = body;
+
+    try {
+
+        client = await pool.connect();
+        result = await client.query(queriesPlaces.updatePlaceQuery, [place_name, address, coords, phone, email, contact_name, place_id])
+
+    } catch (error) {
+
+        console.log('Model FAILED updating place. Please, contact administrator.')
+    }
+
+    finally {
+
+        client.release();
+    }
+    return result;
+};
+
+
+/** DOCS
+ * Petición a la base de datos para eliminar un place existente a través
+ * a través del email (un establecimiento afiliado)
+ * @method deletePlace
+ * @async
+ * @param {String} email correo del establecimiento
+ * @returns {json} 
+ * @throws {Error}
+ */
+//Delete Place
+const deletePlace = async (email) => {
+
+    let client, result;
+
+    try {
+
+        client = await pool.connect();
+        result = await client.query(queriesPlaces.deletePlaceQuery, [email])
+
+    } catch (error) {
+
+        console.log('Model FAILED deleting place. Please, contact administrator.')
+    }
+
+    finally {
+
+        client.release();
+    }
     return result;
 };
 
 
 /**DOCS
- * Hace la consulta a la base de datos para traer el password del usuario a través de su id.
+ * Hace la consulta a la base de datos para traer el password del establecimiento a través de su id.
  * @method modelGetPasswordByID
  * @async
- * @param {String} id ID del usuario
+ * @param {String} id ID del establecimiento
  * @returns {json} El password
  * @throws {Error}
  */
@@ -220,7 +263,7 @@ const modelGetPasswordByID = async (id) => {
         
         client = await pool.connect();
 
-        const data = await client.query(queriesUser.getUserPass, [id])
+        const data = await client.query(queriesPlaces.getPlacePass, [id])
         
         data.rowCount != 0 ? result = data.rows : result = false;
 
@@ -237,11 +280,13 @@ const modelGetPasswordByID = async (id) => {
 
 
 module.exports = {
-    modelGetPasswordByID,
-    modelCreateUser,
-    modelGetUsers,
-    modelUpdateUser,
-    modelGetUserByEmail
+    getAllRestaurants,
+    getAllPlaces,
+    getPlaceByPhone,
+    createPlace,
+    updatePlace,
+    deletePlace,
+    modelGetPasswordByID
 }</code></pre>
         </article>
     </section>
