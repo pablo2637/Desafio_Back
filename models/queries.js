@@ -126,7 +126,8 @@ const queriesRecycle = {
                 INNER JOIN places AS p
                 ON p.place_id=r.place_id
                 INNER JOIN restaurants AS e ON p.rest_id = e.id
-                WHERE p.place_id=$1;`,
+                WHERE p.place_id=$1
+                ORDER BY r.register_date;`,
 
 
     check1000Points: `SELECT user_id
