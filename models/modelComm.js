@@ -4,14 +4,14 @@ const {
   queriesComments
 } = require('./queries');
 
+//*Comments models (comming in v.2)
 
-/**
+/**DOCS
  * Obtiene todos los comentarios de la base de datos.
  *
  * @returns {Promise<Array|boolean>} Un array de objetos con los comentarios o false si no se encontraron comentarios.
  * @throws {Error} Si ocurre algún error durante la ejecución de la consulta.
  */
-
 const modelGetAllComm = async () => {
 
     let client, result;
@@ -41,7 +41,7 @@ const modelGetAllComm = async () => {
 };
 
 
-/**
+/**DOCS
  * Inserta un nuevo comentario en la base de datos.
  *
  * @param {Object} comment - Los datos del comentario a insertar.
@@ -51,7 +51,6 @@ const modelGetAllComm = async () => {
  * @returns {Promise<Array|boolean>} Un array de objetos con los comentarios insertados o false si no se pudo realizar.
  * @throws {Error} Si ocurre algún error durante la ejecución de la consulta.
  */
-
 const modelInsertComm = async ({ comm, user_id, place_id }) => {
 
     let client, result;
@@ -78,7 +77,8 @@ const modelInsertComm = async ({ comm, user_id, place_id }) => {
     return result;
 };
 
-/**
+
+/**DOCS
  * Actualiza un comentario existente en la base de datos.
  *
  * @param {Object} comment - Los datos del comentario a actualizar.
@@ -88,7 +88,6 @@ const modelInsertComm = async ({ comm, user_id, place_id }) => {
  * @returns {Promise<Array|boolean>} Un array de objetos con los comentarios actualizados o false si no se pudo realizar la actualización.
  * @throws {Error} Si ocurre algún error durante la ejecución de la consulta.
  */
-
 const modelUpdateComm = async ({ comm, user_id, place_id }) => {
 
   let client, result;
@@ -116,15 +115,13 @@ const modelUpdateComm = async ({ comm, user_id, place_id }) => {
 };
 
 
-/**
+/**DOCS
  * Elimina un comentario de la base de datos.
  *
  * @param {number} comm_id - El ID del comentario a eliminar.
  * @returns {Promise<boolean>} Indicador de éxito de la eliminación del comentario.
  * @throws {Error} Si ocurre algún error durante la ejecución de la consulta.
  */
-
-
 const modelDeleteComm = async (comm_id) => {
     let client, result;
   
@@ -146,9 +143,8 @@ const modelDeleteComm = async (comm_id) => {
     }
   
     return result;
-  };
+};
   
-
 
 module.exports = {
     modelGetAllComm,

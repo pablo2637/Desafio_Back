@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { generateJwt, renewToken } = require('../helpers/jwt')
+const { generateJwt, renewToken } = require('../helpers/jwt');
 const jwt = require('jsonwebtoken');
 
 const {
@@ -10,8 +10,9 @@ const {
     modelGetPasswordByID
 } = require('../models/modelUsers');
 
+//*Users CONTROLLERS
 
-/**
+/**DOCS
  * Hace la consulta a la base de datos y devuelve todos los usuarios.
  * @method getUsers
  * @async
@@ -20,6 +21,7 @@ const {
  * @returns {jon} Con los usuarios de la base de datos.
  * @throws {Error}
  */
+//Gets all users ++++++++++
 const getUsers = async (req, res) => {
 
     try {
@@ -43,13 +45,11 @@ const getUsers = async (req, res) => {
             msg: 'Error en getUsers.',
             error: e
         });
-
     };
 };
 
 
-
-/**
+/**DOCS
  * Hace la petición a la base de datos para crear un usuario nuevo.
  * @method createUser
  * @async
@@ -59,6 +59,7 @@ const getUsers = async (req, res) => {
  * @returns {jon} Con los datos del usuario creado.
  * @throws {Error}
  */
+//Register a new user ++++++++++
 const createUser = async ({ body }, res) => {
 
     try {
@@ -106,8 +107,7 @@ const createUser = async ({ body }, res) => {
 };
 
 
-
-/**
+/**DOCS
  * Hace la petición a la base de datos para editar un usuario.
  * @method updateUser
  * @async
@@ -117,6 +117,7 @@ const createUser = async ({ body }, res) => {
  * @returns {jon} Con los usuarios de la base de datos.
  * @throws {Error}
  */
+//Updates a single user ++++++++++
 const updateUser = async ({ body, params }, res) => {
 
     try {
@@ -143,9 +144,7 @@ const updateUser = async ({ body, params }, res) => {
 };
 
 
-
-
-/**
+/**DOCS
  * Devuelve todos los usuarios.
  * @method getUsers
  * @async
@@ -155,6 +154,7 @@ const updateUser = async ({ body, params }, res) => {
  * @returns {jon} Con el usuario de la base de datos.
  * @throws {Error}
  */
+//Gets single user by email ++++++++++
 const getUserByEmail = async ({ params }, res) => {
 
     try {
@@ -182,15 +182,11 @@ const getUserByEmail = async ({ params }, res) => {
             msg: 'Error en getUserByEmail.',
             error: e.stack
         });
-
     };
 };
 
 
-
-
-
-/**
+/**DOCS
  * Devuelve todos los usuarios.
  * @method loginUser
  * @async
@@ -200,6 +196,7 @@ const getUserByEmail = async ({ params }, res) => {
  * @returns {jon} Con el usuario de la base de datos.
  * @throws {Error}
  */
+//Login existing user ++++++++++
 const loginUser = async ({ body }, res) => {
 
     try {
@@ -250,9 +247,7 @@ const loginUser = async ({ body }, res) => {
 };
 
 
-
-
-/**
+/**DOCS
  * Se verifica que el token sea válido, si lo es, continúa al siguiente
  * paso y crea una cookie con los datos del usuario obtenidos del token.
  * Si el token no es válido, se redirige a 'login'.
@@ -264,6 +259,7 @@ const loginUser = async ({ body }, res) => {
  * @param {Function} next Continúa al siguiente middleware
  * @throws Redirige a la página de login
  */
+//Validates user's token ++++++++++
 const validateJWT = async ({ body }, res) => {
 
     const token = body.token;
@@ -313,7 +309,6 @@ const validateJWT = async ({ body }, res) => {
         });
 
 };
-
 
 
 module.exports = {

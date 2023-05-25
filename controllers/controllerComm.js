@@ -5,9 +5,9 @@ const {
     modelDeleteComm
 } = require ('../models/modelComm')
 
+//*Comments CONTROLLERS (comming in v.2)
 
-
-/**
+/**DOCS
  * Obtiene todos los comentarios del foro.
  * @function
  * @async
@@ -15,7 +15,7 @@ const {
  * @param {Object} res - El objeto de respuesta.
  * @throws {Object} Error en caso de que algo salga mal en la ejecución.
  */
-
+//Get all comments entries ++++++++++
 const getAllComm = async (req, res) => {
 
     try {
@@ -46,16 +46,15 @@ const getAllComm = async (req, res) => {
 };
 
 
-/**
+/**DOCS
  * Inserta un comentario en el foro.
  * @function
  * @async
  * @param {Object} req - El objeto de solicitud con el cuerpo del comentario.
  * @param {Object} res - El objeto de respuesta.
  * @throws {Object} Error en caso de que algo salga mal en la ejecución.
- * 
  */
-
+//Creates a new comment entry ++++++++++
 const Insertcomm = async ({ body }, res) => {
 
     try {
@@ -77,16 +76,15 @@ const Insertcomm = async ({ body }, res) => {
 };
 
 
-/**
+/**DOCS
  * actualiza un comentario en el foro.
  * @function
  * @async
  * @param {Object} req - El objeto de solicitud con el cuerpo del comentario.
  * @param {Object} res - El objeto de respuesta.
  * @throws {Object} Error en caso de que algo salga mal en la ejecución.
- * 
  */
-
+//Updates a comments entry ++++++++++
 const UpdateComm = async ({ body }, res) => {
 
     try {
@@ -108,8 +106,7 @@ const UpdateComm = async ({ body }, res) => {
 };
 
 
-
-/**
+/**DOCS
  * Elimina un comentario del foro.
  * @function
  * @async
@@ -117,6 +114,7 @@ const UpdateComm = async ({ body }, res) => {
  * @param {Object} res - El objeto de respuesta.
  * @throws {Object} Error en caso de que algo salga mal en la ejecución.
  */
+//Deletes a comment entry ++++++++++
 const deleteComm = async (req, res) => {
     try {
       const comm_id = req.params.id;
@@ -143,9 +141,6 @@ const deleteComm = async (req, res) => {
   };
   
   
-
-
-
 module.exports = {
     getAllComm,
     Insertcomm,
